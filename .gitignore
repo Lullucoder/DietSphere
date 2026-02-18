@@ -1,0 +1,126 @@
+# ============================================
+# GIT IGNORE FILE
+# ============================================
+# This file tells Git which files to ignore (not track).
+# We don't want to commit certain files to version control because:
+# - They're generated automatically (like compiled code)
+# - They contain sensitive information (like passwords)
+# - They're specific to your computer (like IDE settings)
+
+# --------------------------------------------
+# COMPILED CODE & BUILD OUTPUTS
+# --------------------------------------------
+# These are generated when we compile/build the project
+# We don't need to track them because they can be recreated anytime
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# --------------------------------------------
+# IDE SPECIFIC FILES
+# --------------------------------------------
+# Different developers use different IDEs (Eclipse, IntelliJ, VS Code)
+# These are personal preference files that shouldn't be shared
+
+# Eclipse IDE files
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA files
+.idea
+*.iws
+*.iml
+*.ipr
+
+# VS Code files
+.vscode/
+
+# NetBeans files
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# --------------------------------------------
+# OPERATING SYSTEM FILES
+# --------------------------------------------
+# These are created by your operating system
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux files
+*~
+
+# --------------------------------------------
+# LOGS & TEMPORARY FILES
+# --------------------------------------------
+# Log files can get very large and change constantly
+*.log
+*.tmp
+*.temp
+logs/
+
+# --------------------------------------------
+# SENSITIVE INFORMATION
+# --------------------------------------------
+# NEVER commit these! They contain passwords and secrets
+application-local.properties
+application-prod.properties
+.env
+.env.local
+
+# --------------------------------------------
+# NODE MODULES (for frontend)
+# --------------------------------------------
+# When we add the React frontend, these will be relevant
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend build output
+frontend/dist/
+frontend/build/
+
+# --------------------------------------------
+# DATABASE FILES
+# --------------------------------------------
+# If using H2 or SQLite for testing
+*.db
+*.sqlite
+
+# --------------------------------------------
+# PACKAGE FILES
+# --------------------------------------------
+# These are generated when we package the application
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# --------------------------------------------
+# MISC
+# --------------------------------------------
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar

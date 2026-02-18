@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <!-- This tells Maven what version of the configuration format we're using -->
+    <modelVersion>4.0.0</modelVersion>
+    
+    <!-- 
+        Spring Boot Parent: This is like inheriting settings from Spring Boot.
+        It gives us sensible defaults and manages versions of common libraries.
+        Think of it as a "starter pack" that makes setup easier.
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
+    
+    <!-- 
+        Project Identity: These three lines uniquely identify our project.
+        - groupId: Usually your organization/domain (like com.company)
+        - artifactId: The name of this specific project
+        - version: What version of our app this is
+    -->
+    <groupId>com.nutrition</groupId>
+    <artifactId>diet-balance-tracker</artifactId>
+    <version>1.0.0</version>
+    
+    <!-- A friendly name and description for our project -->
+    <name>Diet Balance Nutrient Tracker</name>
+    <description>Web application for tracking dietary habits and detecting nutrient deficiencies</description>
+    
+    <!-- 
+        Properties: These are like variables we can reuse throughout this file.
+        We're telling Maven to use Java 17 for compiling our code.
+    -->
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+    
+    <!-- 
+        Dependencies: These are external libraries our project needs to work.
+        Think of them as "ingredients" for our application recipe.
+    -->
+    <dependencies>
+        
+        <!-- 
+            Spring Boot Web Starter: This gives us everything we need to build a web application.
+            It includes a web server, tools for handling HTTP requests, and more.
+            This is the foundation for our REST API.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <!-- 
+            Spring Data JPA: This helps us talk to the database easily.
+            JPA = Java Persistence API - it's a way to save and retrieve data
+            without writing lots of SQL code manually.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        
+        <!-- 
+            Spring Security: This handles user login, passwords, and permissions.
+            It makes sure only authorized users can access certain features.
+            Think of it as the "security guard" for our application.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        <!-- 
+            Spring Validation: This checks if user input is valid.
+            For example, it can verify that an email address looks correct,
+            or that age is a positive number.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        
+        <!-- 
+            MySQL Driver: This is the "translator" that lets Java talk to MySQL database.
+            MySQL is where we'll store all our user data, food items, etc.
+            MySQL is very popular and easy to use!
+        -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <!-- 
+            JWT Library: JWT = JSON Web Token
+            This creates secure tokens for user authentication.
+            When a user logs in, we give them a token (like a digital key)
+            that they use for future requests instead of sending password every time.
+        -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <!-- 
+            Lombok: This is a "code generator" that reduces boilerplate code.
+            Instead of writing getters, setters, constructors manually,
+            Lombok generates them automatically with simple annotations.
+            Makes our code cleaner and easier to read!
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- 
+            Spring Boot Test: This gives us tools to test our application.
+            Testing ensures our code works correctly before we deploy it.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- 
+            Spring Security Test: Special testing tools for security features.
+            Helps us test login, permissions, etc.
+        -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- 
+            jqwik: This is for property-based testing.
+            Instead of testing with specific examples, it generates
+            hundreds of random test cases to find edge cases we might miss.
+            This is optional but helps ensure our code is really robust.
+        -->
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <version>1.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
+    
+    <!-- 
+        Build Configuration: This tells Maven how to compile and package our application.
+        The Spring Boot plugin creates an executable JAR file that contains
+        everything needed to run our app (including the web server).
+    -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- We don't need Lombok in the final JAR since it only helps during development -->
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>
