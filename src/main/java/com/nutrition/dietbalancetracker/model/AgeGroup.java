@@ -81,7 +81,7 @@ public enum AgeGroup {
      * - Skipping meals
      * - Preferring snacks over meals
      */
-    AGE_9_13,
+    AGE_4_8,
     
     /**
      * AGE_9_13

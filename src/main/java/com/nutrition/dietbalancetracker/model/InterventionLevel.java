@@ -1,4 +1,4 @@
-package com.nutrition/dietbalancetracker/model;
+package com.nutrition.dietbalancetracker.model;
 
 /**
  * INTERVENTION LEVEL ENUMERATION
