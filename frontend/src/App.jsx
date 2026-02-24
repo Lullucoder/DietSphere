@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage'
 import Dashboard from './pages/Dashboard'
 import FoodLogging from './pages/FoodLogging'
 import MealHistory from './pages/MealHistory'
+import NutritionAnalysis from './pages/NutritionAnalysis'
+import UserProfile from './pages/UserProfile'
 import './App.css'
 
 function App() {
@@ -26,6 +28,10 @@ function App() {
   const handleLogout = () => {
     setUser(null)
     localStorage.removeItem('user')
+  }
+
+  const handleUpdateUser = (updatedUser) => {
+    setUser(updatedUser)
   }
 
   return (
@@ -51,6 +57,14 @@ function App() {
           <Route 
             path="/history" 
             element={user ? <MealHistory user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/nutrition" 
+            element={user ? <NutritionAnalysis user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/profile" 
+            element={user ? <UserProfile user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} 
           />
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>

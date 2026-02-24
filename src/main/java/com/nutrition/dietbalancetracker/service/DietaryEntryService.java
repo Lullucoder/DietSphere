@@ -69,4 +69,15 @@ public class DietaryEntryService {
         return dietaryEntryRepository.findByUserIdAndConsumedAtBetweenOrderByConsumedAtDesc(
                 userId, startOfDay, endOfDay);
     }
+
+    // Delete a meal entry (verifies ownership)
+    @Transactional
+    public void deleteEntry(Long entryId, Long userId) {
+        DietaryEntry entry = dietaryEntryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Entry not found"));
+        if (!entry.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized: entry does not belong to user");
+        }
+        dietaryEntryRepository.delete(entry);
+    }
 }
