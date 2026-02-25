@@ -1,6 +1,7 @@
 package com.nutrition.dietbalancetracker.model;
 
 // These imports bring in JPA (database) functionality
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -145,6 +146,7 @@ public class User {
      * cascade = ALL means: if we delete a user, delete their health data too
      * orphanRemoval = true means: if health data loses its user, delete it
      */
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private HealthData healthData;
     
@@ -166,6 +168,7 @@ public class User {
      * 
      * We initialize this as an empty ArrayList so it's never null
      */
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DietaryEntry> dietaryEntries = new ArrayList<>();
     

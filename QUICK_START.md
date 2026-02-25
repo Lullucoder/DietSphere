@@ -1,211 +1,146 @@
-# 🚀 Quick Start Guide - Diet Balance Tracker MVP
+# Quick Start Guide — Diet Balance Nutrient Tracker
 
-## ✅ What's Been Built
+## Prerequisites
 
-### Backend (Spring Boot)
-- ✅ User registration & login with JWT
-- ✅ Food search functionality
-- ✅ Meal logging system
-- ✅ 10 sample foods pre-loaded
-- ✅ MySQL database integration
+| Tool | Version | Install |
+|------|---------|---------|
+| JDK | 21 | https://adoptium.net/ |
+| Maven | 3.9+ | https://maven.apache.org/ |
+| MySQL | 8.0+ | https://dev.mysql.com/downloads/ |
+| Node.js | 18+ | https://nodejs.org/ |
 
-### Frontend (React + Vite)
-- ✅ Beautiful login/register pages
-- ✅ Dashboard showing today's calories
-- ✅ Food search and logging interface
-- ✅ Meal history view
-- ✅ Responsive, modern UI
-
-## 🎯 Features Implemented
-
-1. **User Authentication** 🔐
-   - Register new account
-   - Login with username/password
-   - JWT token-based auth
-
-2. **Food Logging** 🍎
-   - Search from 10 pre-loaded foods
-   - Select portion size
-   - Choose meal type (Breakfast/Lunch/Dinner/Snack)
-   - Log meals instantly
-
-3. **Nutrition Dashboard** 📊
-   - View today's total calories
-   - See all meals logged today
-   - Track meal count
-   - Quick access to log new meals
-
-## 🏃 How to Run
-
-### Step 1: Set Up MySQL Database
+## 1. Create the MySQL Database
 
 ```sql
--- Open MySQL and run:
-CREATE DATABASE nutrition_db;
+CREATE DATABASE IF NOT EXISTS nutrition_db;
 ```
 
-### Step 2: Configure Database
+Default credentials in `application.properties`: **root / root**  
+Change them if your MySQL setup differs.
 
-Edit `src/main/resources/application.properties`:
-```properties
-spring.datasource.username=root
-spring.datasource.password=YOUR_MYSQL_PASSWORD
-```
-
-### Step 3: Run Backend
+## 2. Start the Backend
 
 ```bash
-# In project root directory
+cd <project-root>
 mvn spring-boot:run
 ```
 
-Wait for: "Started DietBalanceTrackerApplication"
-Backend will be at: http://localhost:8080
+Wait for `Started DietBalanceTrackerApplication` in the console.  
+Backend: **http://localhost:8080**
 
-### Step 4: Install Frontend Dependencies
+> First run auto-creates all tables and seeds 10 foods with real USDA nutrient data.
+
+## 3. Start the Frontend
 
 ```bash
 cd frontend
-npm install
-```
-
-### Step 5: Run Frontend
-
-```bash
-# In frontend directory
+npm install      # first time only
 npm run dev
 ```
 
-Frontend will be at: http://localhost:5173
+Frontend: **http://localhost:5173**
 
-## 🎨 Using the Application
+---
 
-### 1. Register an Account
-- Go to http://localhost:5173
-- Click "Register here"
-- Fill in: username, email, password, age
-- Click "Register"
+## Using the Application
 
-### 2. View Dashboard
-- See your today's calories (starts at 0)
-- View meals logged today
-- Click "Log New Meal" button
+### Register & Login
+1. Open http://localhost:5173
+2. Click **Register here** → fill in username, email, password, age → submit
+3. You are automatically logged in and redirected to the Dashboard
 
-### 3. Log a Meal
-- Search for food (try: "apple", "chicken", "rice")
-- Click on a food to select it
-- Enter portion size (e.g., 1.5 for 1.5 servings)
-- Choose meal type
-- Click "Log This Meal"
+### Dashboard
+- Shows today's calorie count + progress bar
+- Displays macronutrient totals (Protein / Carbs / Fat)
+- Quick links to Log Food and Nutrition Analysis
 
-### 4. View History
-- Click "History" in navigation
-- See all your logged meals
-- View dates, times, and calories
+### Log a Meal
+1. Click **Log Food** in the navbar
+2. Type a food name to search (e.g. "chicken", "banana")
+3. Click a food item → see its nutrient breakdown
+4. Choose portion size and meal type → **Log This Meal**
 
-## 📦 Pre-loaded Foods
+### Meal History
+- Click **History** in the navbar
+- Meals are grouped by date with macro breakdown
+- Click **Delete** to remove any entry
 
-The database comes with 10 foods:
-1. Apple 🍎
-2. Banana 🍌
-3. Chicken Breast 🍗
-4. Brown Rice 🍚
-5. Broccoli 🥦
-6. Milk 🥛
-7. Egg 🥚
-8. Salmon 🐟
-9. Spinach 🥬
-10. Almonds 🥜
+### Nutrition Analysis
+- Click **Nutrition** in the navbar
+- Toggle **Today** / **This Week**
+- See macro & micronutrient bars vs. recommended daily values
+  - Green ≥ 80% — on track
+  - Amber ≥ 50% — needs improvement
+  - Red < 50% — deficient
+- Personalized food recommendations below
 
-## 🎓 For Classroom Demo
+### User Profile
+- Click **Profile** in the navbar
+- View account info and activity stats
+- Edit email or age
 
-### What to Show:
+---
 
-1. **Registration Flow**
-   - "Users can create accounts with basic info"
-   - Show the form validation
+## Pre-loaded Foods (10 items, real USDA data)
 
-2. **Food Logging**
-   - "Users search for foods from our database"
-   - "They can specify how much they ate"
-   - "System calculates calories automatically"
+| Food | Calories | Protein | Category |
+|------|----------|---------|----------|
+| Apple | 95 | 0.5 g | Fruit |
+| Banana | 105 | 1.3 g | Fruit |
+| Chicken Breast | 165 | 31 g | Protein |
+| Brown Rice | 216 | 5 g | Grain |
+| Broccoli | 55 | 3.7 g | Vegetable |
+| Milk | 149 | 7.7 g | Dairy |
+| Egg | 78 | 6.3 g | Protein |
+| Salmon | 206 | 22 g | Protein |
+| Spinach | 7 | 0.9 g | Vegetable |
+| Almonds | 164 | 6 g | Nut/Seed |
 
-3. **Dashboard**
-   - "Dashboard shows today's nutrition summary"
-   - "Users can see all their meals"
-   - "Color-coded, easy to understand"
+All items include full micronutrient data (vitamins A, C, D, E, K, B12 + calcium, iron, magnesium, zinc, potassium).
 
-### Code to Explain:
+---
 
-1. **Backend Architecture**
-   - Entities (User, FoodItem, DietaryEntry)
-   - Repositories (talk to database)
-   - Services (business logic)
-   - Controllers (REST API)
+## API Endpoints
 
-2. **Frontend Structure**
-   - React components
-   - Axios for API calls
-   - React Router for navigation
-   - State management with useState
+### Public (no token required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register |
+| POST | `/api/auth/login` | Login → JWT |
+| GET | `/api/auth/profile?userId=` | Profile |
+| PUT | `/api/auth/profile?userId=` | Update profile |
+| GET | `/api/health` | Health check |
 
-3. **Security**
-   - Password hashing with BCrypt
-   - JWT tokens for authentication
-   - CORS configuration
+### Authenticated (Bearer token required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/foods/search?query=` | Search foods |
+| POST | `/api/entries?userId=` | Log meal |
+| GET | `/api/entries?userId=` | Meal history |
+| GET | `/api/entries/today?userId=` | Today's meals |
+| DELETE | `/api/entries/{id}?userId=` | Delete entry |
+| GET | `/api/analysis/today?userId=` | Today's analysis |
+| GET | `/api/analysis/week?userId=` | Weekly analysis |
 
-## 🐛 Troubleshooting
+---
 
-### Backend won't start
-- Check MySQL is running
-- Verify database credentials in application.properties
-- Ensure port 8080 is not in use
+## Jury Demo Script (recommended flow)
 
-### Frontend won't start
-- Run `npm install` in frontend directory
-- Check port 5173 is not in use
-- Verify Node.js is installed
+1. **Register** a new user — show form validation
+2. **Log 3-4 meals** — search foods, select portions, different meal types
+3. **Dashboard** — point out calorie progress + macros
+4. **Nutrition Analysis (Today)** — show bars, color coding, recommendations
+5. **Switch to Week view** — demonstrate averaging logic
+6. **History** — show grouped-by-date view, delete an entry
+7. **Profile** — show stats, edit age
+8. **Code walkthrough** — explain MVC layers, JWT flow, React component structure
 
-### Can't log in
-- Make sure backend is running
-- Check browser console for errors
-- Verify you registered first
+## Troubleshooting
 
-### No foods showing
-- Backend should auto-create 10 foods on first run
-- Check backend logs for errors
-- Verify database connection
-
-## 📝 API Endpoints
-
-### Authentication
-- POST `/api/auth/register` - Register new user
-- POST `/api/auth/login` - Login user
-
-### Foods
-- GET `/api/foods/search?query=apple` - Search foods
-
-### Dietary Entries
-- POST `/api/entries?userId=1` - Log a meal
-- GET `/api/entries?userId=1` - Get all meals
-- GET `/api/entries/today?userId=1` - Get today's meals
-
-## 🎉 Success!
-
-If you can:
-1. ✅ Register and login
-2. ✅ Search for foods
-3. ✅ Log a meal
-4. ✅ See it on dashboard
-
-**Your MVP is working perfectly!** 🎊
-
-## 💡 Tips for Presentation
-
-- Keep it simple - focus on the 3 core features
-- Show the flow: Register → Login → Log Food → View Dashboard
-- Explain the code is well-commented for learning
-- Mention it's production-ready but simplified for education
-- Highlight the clean UI and user experience
-
-Good luck with your demo! 🚀
+| Issue | Fix |
+|-------|-----|
+| Port 8080 in use | `server.port=8081` in application.properties |
+| MySQL connection refused | Start MySQL: `net start mysql` |
+| Access denied | Check username/password in application.properties |
+| Foods not appearing | Backend must be running; check for startup errors |
+| 401 on API calls | Login again — token expires after 24 hours |

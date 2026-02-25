@@ -119,8 +119,7 @@ public enum AgeGroup {
      * - Not drinking enough milk
      * - Irregular meal times
      */
-    AGE_9_13,
-    
+
     /**
      * AGE_14_18
      * ---------

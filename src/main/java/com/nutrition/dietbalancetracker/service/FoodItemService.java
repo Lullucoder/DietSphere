@@ -47,10 +47,31 @@ public class FoodItemService {
         
         // Add nutrient info if available
         if (food.getNutrientProfile() != null) {
-            dto.setCalories(food.getNutrientProfile().getCalories());
-            dto.setProtein(food.getNutrientProfile().getProtein());
-            dto.setCarbohydrates(food.getNutrientProfile().getCarbohydrates());
-            dto.setFat(food.getNutrientProfile().getFat());
+            var np = food.getNutrientProfile();
+            dto.setCalories(np.getCalories());
+            dto.setProtein(np.getProtein());
+            dto.setCarbohydrates(np.getCarbohydrates());
+            dto.setFat(np.getFat());
+
+            FoodItemResponseDTO.NutrientProfileDTO npDTO = new FoodItemResponseDTO.NutrientProfileDTO();
+            npDTO.setServingSize(np.getServingSize());
+            npDTO.setCalories(np.getCalories());
+            npDTO.setProtein(np.getProtein());
+            npDTO.setCarbohydrates(np.getCarbohydrates());
+            npDTO.setFat(np.getFat());
+            npDTO.setFiber(np.getFiber());
+            npDTO.setVitaminA(np.getVitaminA());
+            npDTO.setVitaminC(np.getVitaminC());
+            npDTO.setVitaminD(np.getVitaminD());
+            npDTO.setVitaminE(np.getVitaminE());
+            npDTO.setVitaminK(np.getVitaminK());
+            npDTO.setVitaminB12(np.getVitaminB12());
+            npDTO.setCalcium(np.getCalcium());
+            npDTO.setIron(np.getIron());
+            npDTO.setMagnesium(np.getMagnesium());
+            npDTO.setZinc(np.getZinc());
+            npDTO.setPotassium(np.getPotassium());
+            dto.setNutrientProfile(npDTO);
         }
         
         return dto;

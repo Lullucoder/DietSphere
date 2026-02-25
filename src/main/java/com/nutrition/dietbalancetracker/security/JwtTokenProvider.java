@@ -1,11 +1,16 @@
 package com.nutrition.dietbalancetracker.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.security.Key;
-import java.util.Date;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * JWT TOKEN PROVIDER
@@ -26,25 +31,25 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
         
-        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
+            .subject(username)
+            .issuedAt(now)
+            .expiration(expiryDate)
+            .signWith(key)
                 .compact();
     }
     
     // Get username from token
     public String getUsernameFromToken(String token) {
-        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+        Claims claims = Jwts.parser()
+            .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+            .parseSignedClaims(token)
+            .getPayload();
         
         return claims.getSubject();
     }
@@ -52,8 +57,8 @@ public class JwtTokenProvider {
     // Validate token
     public boolean validateToken(String token) {
         try {
-            Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;

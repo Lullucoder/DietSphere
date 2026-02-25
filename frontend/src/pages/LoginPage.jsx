@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../services/api'
 import './AuthPages.css'
 
 function LoginPage({ onLogin }) {
@@ -24,7 +24,7 @@ function LoginPage({ onLogin }) {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', formData)
+      const response = await api.post('/api/auth/login', formData)
       onLogin(response.data)
     } catch (err) {
       setError('Invalid username or password')

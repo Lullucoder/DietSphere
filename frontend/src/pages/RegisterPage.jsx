@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../services/api'
 import './AuthPages.css'
 
 function RegisterPage({ onRegister }) {
@@ -26,7 +26,7 @@ function RegisterPage({ onRegister }) {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/register', {
+      const response = await api.post('/api/auth/register', {
         ...formData,
         age: parseInt(formData.age)
       })

@@ -1,209 +1,173 @@
 # Diet Balance Nutrient Tracker 🥗
 
-A web application designed to help children and adolescents track their dietary habits and detect nutrient deficiencies. Built with Java Spring Boot backend and React frontend.
+A full-stack web application for tracking dietary habits and detecting nutrient deficiencies. Built with **Java 21 + Spring Boot 3.2** (backend) and **React 18 + Vite** (frontend).
 
 ## 📋 What Does This Application Do?
 
-This application helps users:
-- **Track what they eat** - Log meals and snacks throughout the day
-- **Analyze nutrition** - Automatically calculate nutrient intake
-- **Detect deficiencies** - Identify when important nutrients are missing
-- **Get recommendations** - Receive personalized food suggestions
-- **Monitor progress** - View trends and reports over time
+- **Track meals** — Log breakfast, lunch, dinner & snacks with portion sizes
+- **Analyze nutrition** — View macro & micronutrient intake vs. recommended daily values
+- **Detect deficiencies** — Color-coded nutrient bars highlight gaps
+- **Get recommendations** — Personalized food suggestions based on deficiencies
+- **Manage profile** — Update email, age; view activity stats
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Java 17** - The programming language
-- **Spring Boot 3.2** - Framework that makes building web apps easier
-- **PostgreSQL** - Database where we store all the data
-- **Spring Security + JWT** - Handles user login and security
-- **Maven** - Tool that manages dependencies and builds the project
+- **Java 21** — Latest LTS release
+- **Spring Boot 3.2** — REST API framework
+- **Spring Security 6 + JWT** — Stateless authentication with Bearer tokens
+- **Spring Data JPA / Hibernate 6** — ORM for MySQL
+- **MySQL 8** — Relational database
+- **Lombok** — Reduces boilerplate code
+- **Maven** — Build & dependency management
 
 ### Frontend
-- **React** - JavaScript library for building user interfaces
-- **Vite** - Fast build tool for modern web development
-- **Axios** - Makes HTTP requests to our backend API
-- **React Router** - Handles navigation between pages
+- **React 18** — Component-based UI
+- **Vite 5** — Fast dev server & bundler
+- **React Router 6** — Client-side routing
+- **Axios** — HTTP client with JWT interceptor
 
 ## 🚀 Getting Started
 
-### Prerequisites (What You Need Installed)
+### Prerequisites
 
-1. **Java 17 or higher**
-   - Check if installed: `java -version`
-   - Download from: https://adoptium.net/
+| Tool | Version | Check |
+|------|---------|-------|
+| **Java (JDK)** | 21+ | `java -version` |
+| **Maven** | 3.9+ | `mvn -version` |
+| **MySQL** | 8.0+ | `mysql --version` |
+| **Node.js** | 18+ | `node -v` |
+| **npm** | 9+ | `npm -v` |
 
-2. **Maven**
-   - Check if installed: `mvn -version`
-   - Download from: https://maven.apache.org/download.cgi
+### Step 1 — Set Up MySQL Database
 
-3. **PostgreSQL Database**
-   - Check if installed: `psql --version`
-   - Download from: https://www.postgresql.org/download/
+```sql
+-- Open MySQL CLI or MySQL Workbench and run:
+CREATE DATABASE IF NOT EXISTS nutrition_db;
+```
 
-4. **Node.js and npm** (for frontend)
-   - Check if installed: `node -version` and `npm -version`
-   - Download from: https://nodejs.org/
+The app uses `root` / `root` by default. Edit `src/main/resources/application.properties` if your credentials differ:
+```properties
+spring.datasource.username=root
+spring.datasource.password=root
+```
 
-### Step 1: Set Up the Database
+### Step 2 — Run the Backend
 
-1. Open PostgreSQL command line or pgAdmin
-2. Create a new database:
-   ```sql
-   CREATE DATABASE nutrition_db;
-   ```
-3. The application will automatically create all the tables when it starts!
+```bash
+cd <project-root>
+mvn spring-boot:run
+```
 
-### Step 2: Configure the Application
+Wait for: `Started DietBalanceTrackerApplication`  
+Backend available at: **http://localhost:8080**
 
-1. Open `src/main/resources/application.properties`
-2. Update these lines with your database credentials:
-   ```properties
-   spring.datasource.username=your_postgres_username
-   spring.datasource.password=your_postgres_password
-   ```
+> On first run the app auto-creates tables and seeds 10 food items with real USDA nutrient data.
 
-### Step 3: Run the Backend
+### Step 3 — Run the Frontend
 
-1. Open terminal in the project root directory
-2. Run this command:
-   ```bash
-   mvn spring-boot:run
-   ```
-3. Wait for the message: "Started DietBalanceTrackerApplication"
-4. The backend is now running at: http://localhost:8080
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Step 4: Run the Frontend (Coming Soon)
-
-Instructions will be added when we implement the React frontend.
+Frontend available at: **http://localhost:5173**
 
 ## 📁 Project Structure
 
 ```
-diet-balance-tracker/
-│
+FSAD-Project/
 ├── src/main/java/com/nutrition/dietbalancetracker/
-│   ├── controller/          # REST API endpoints (handles HTTP requests)
-│   ├── service/             # Business logic (the "brain" of the app)
-│   ├── repository/          # Database access (talks to PostgreSQL)
-│   ├── model/               # Data models (User, FoodItem, etc.)
-│   ├── dto/                 # Data Transfer Objects (for API requests/responses)
-│   ├── config/              # Configuration classes (security, etc.)
-│   ├── security/            # Security-related code (JWT, authentication)
-│   └── util/                # Utility classes (helper functions)
+│   ├── controller/       # REST endpoints (Auth, Entries, Food, Analysis, Health)
+│   ├── service/          # Business logic (User, DietaryEntry, FoodItem, NutrientAnalysis)
+│   ├── repository/       # Spring Data JPA repositories
+│   ├── model/            # JPA entities (User, FoodItem, NutrientProfile, DietaryEntry, …)
+│   ├── dto/              # Request/response DTOs
+│   ├── config/           # DataInitializer (seeds sample data)
+│   └── security/         # JWT filter, Spring Security config
 │
 ├── src/main/resources/
-│   └── application.properties    # Configuration file
+│   └── application.properties
 │
-├── src/test/                # Test files
+├── frontend/
+│   └── src/
+│       ├── services/api.js          # Centralized Axios instance + JWT interceptor
+│       ├── components/Layout.jsx    # Shared navbar & layout wrapper
+│       └── pages/                   # LoginPage, RegisterPage, Dashboard,
+│                                    # FoodLogging, MealHistory,
+│                                    # NutritionAnalysis, UserProfile
 │
-├── frontend/                # React application (coming soon)
-│
-├── pom.xml                  # Maven configuration (lists all dependencies)
-└── README.md               # This file!
+├── pom.xml
+└── README.md
 ```
 
-## 🎯 Key Features
+## 🔒 Authentication Flow
 
-### For Users
-- ✅ Create account and log in securely
-- ✅ Log daily food intake with portion sizes
-- ✅ View nutrient analysis dashboard
-- ✅ Receive personalized food recommendations
-- ✅ Get alerts for nutrient deficiencies
-- ✅ Generate nutrition reports
-
-### For Admins
-- ✅ Manage food database
-- ✅ Configure nutrient thresholds
-- ✅ View system-wide statistics
-- ✅ Monitor users with critical deficiencies
-
-## 🔒 Security Features
-
-- Passwords are encrypted (never stored as plain text)
-- JWT tokens for secure authentication
-- Role-based access control (User vs Admin)
-- Data encryption at rest
-- HTTPS support for production
+1. User registers or logs in → server returns JWT token
+2. Token stored in `localStorage`
+3. Every API request includes `Authorization: Bearer <token>` header (via Axios interceptor)
+4. `JwtAuthenticationFilter` validates the token on every request
+5. On 401, user is auto-redirected to login
 
 ## 📊 API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Create new account
-- `POST /api/auth/login` - Log in and get token
-- `GET /api/auth/profile` - Get user profile
-- `PUT /api/auth/profile` - Update profile
+### Authentication (`/api/auth` — public)
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/auth/register` | Create account |
+| POST | `/api/auth/login` | Login, returns JWT |
+| GET | `/api/auth/profile?userId=` | Get user profile |
+| PUT | `/api/auth/profile?userId=` | Update email / age |
 
-### Dietary Entries
-- `POST /api/dietary-entries` - Log a meal
-- `GET /api/dietary-entries` - Get your meal history
-- `PUT /api/dietary-entries/{id}` - Update a meal
-- `DELETE /api/dietary-entries/{id}` - Delete a meal
+### Food Items (`/api/foods` — authenticated)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/foods/search?query=` | Search food database |
 
-### Analysis
-- `GET /api/analysis/current` - Get current nutrient status
-- `GET /api/analysis/history` - Get historical trends
+### Dietary Entries (`/api/entries` — authenticated)
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/entries?userId=` | Log a meal |
+| GET | `/api/entries?userId=` | Full meal history |
+| GET | `/api/entries/today?userId=` | Today's meals |
+| DELETE | `/api/entries/{id}?userId=` | Delete an entry |
 
-### Recommendations
-- `GET /api/recommendations` - Get food suggestions
+### Nutrient Analysis (`/api/analysis` — authenticated)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/analysis/today?userId=` | Today's nutrient breakdown |
+| GET | `/api/analysis/week?userId=` | 7-day average analysis |
 
-(More endpoints will be added as we implement features)
+### Health Check (`/api/health` — public)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/health` | Server status |
 
-## 🧪 Running Tests
+## 🎯 Key Features
 
-```bash
-# Run all tests
-mvn test
-
-# Run tests with coverage report
-mvn test jacoco:report
-```
+- ✅ Secure registration & login with JWT
+- ✅ Log meals with food search, portion size & meal type
+- ✅ View meal history grouped by date, with delete support
+- ✅ Dashboard with calorie progress & macro breakdown
+- ✅ Nutrient analysis with 15+ micro/macronutrients vs. RDA
+- ✅ Color-coded deficiency indicators (green/amber/red)
+- ✅ Personalized food recommendations for deficient nutrients
+- ✅ Shared navigation with active link highlighting
+- ✅ Auto-seeded food database with real USDA nutrient values
+- ✅ User profile management
 
 ## 🐛 Troubleshooting
 
-### "Port 8080 is already in use"
-- Another application is using port 8080
-- Solution: Change the port in `application.properties`:
-  ```properties
-  server.port=8081
-  ```
-
-### "Could not connect to database"
-- PostgreSQL is not running
-- Solution: Start PostgreSQL service
-  - Windows: Open Services and start PostgreSQL
-  - Mac: `brew services start postgresql`
-  - Linux: `sudo systemctl start postgresql`
-
-### "Access denied for user"
-- Wrong database username or password
-- Solution: Check credentials in `application.properties`
-
-## 📚 Learning Resources
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [React Documentation](https://react.dev/)
-- [PostgreSQL Tutorial](https://www.postgresqltutorial.com/)
-- [REST API Best Practices](https://restfulapi.net/)
-
-## 👥 For Classroom Presentation
-
-This project is designed to be easy to explain:
-- **Clear separation of concerns** - Each class has one job
-- **Extensive comments** - Every line is explained
-- **Standard patterns** - Uses industry-standard practices
-- **Step-by-step implementation** - Built incrementally
+| Problem | Solution |
+|---------|----------|
+| Port 8080 in use | Change `server.port` in `application.properties` |
+| MySQL connection refused | Ensure MySQL is running: `net start mysql` (Windows) |
+| Access denied for `root` | Verify password in `application.properties` matches MySQL |
+| Frontend 401 errors | Make sure you're logged in; token may have expired (24h) |
+| Tables not created | Set `spring.jpa.hibernate.ddl-auto=update` in properties |
 
 ## 📝 License
 
-This project is for educational purposes.
+This project is for educational purposes (FSAD course project).
 
-## 🤝 Contributing
-
-This is a class project. Contributions are welcome from team members!
-
----
-
-**Need Help?** Check the comments in the code - they explain everything in detail!

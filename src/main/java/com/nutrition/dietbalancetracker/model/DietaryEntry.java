@@ -1,6 +1,7 @@
 package com.nutrition.dietbalancetracker.model;
 
 // Database and utility imports
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -75,6 +76,7 @@ public class DietaryEntry {
      * @ManyToOne creates a "user_id" column in this table
      * that stores which user this entry belongs to.
      */
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
