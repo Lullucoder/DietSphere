@@ -8,6 +8,7 @@ import FoodLogging from './pages/FoodLogging'
 import MealHistory from './pages/MealHistory'
 import NutritionAnalysis from './pages/NutritionAnalysis'
 import UserProfile from './pages/UserProfile'
+import AiChat from './pages/AiChat'
 import './App.css'
 
 function App() {
@@ -75,6 +76,10 @@ function App() {
           <Route 
             path="/profile" 
             element={user ? <UserProfile user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/ai-chat" 
+            element={user ? <AiChat user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
           />
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
