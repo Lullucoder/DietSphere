@@ -1,11 +1,12 @@
 package com.nutrition.dietbalancetracker.service;
 
 import com.nutrition.dietbalancetracker.dto.FoodItemResponseDTO;
+import com.nutrition.dietbalancetracker.model.FoodCategory;
 import com.nutrition.dietbalancetracker.model.FoodItem;
 import com.nutrition.dietbalancetracker.repository.FoodItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,13 +19,25 @@ import java.util.stream.Collectors;
 public class FoodItemService {
     
     private final FoodItemRepository foodItemRepository;
-    
-    // Search foods by name
-    public List<FoodItemResponseDTO> searchFoods(String query) {
+
+    // Search foods by name and optionally filter by category
+    public List<FoodItemResponseDTO> searchFoods(String query, String category) {
         List<FoodItem> foods;
-        
-        if (query == null || query.trim().isEmpty()) {
-            // If no query, return all active foods
+
+        if (category != null && !category.trim().isEmpty()) {
+            try {
+                FoodCategory cat = FoodCategory.valueOf(category.toUpperCase());
+                foods = foodItemRepository.findByCategoryAndIsActiveTrue(cat);
+                if (query != null && !query.trim().isEmpty()) {
+                    String q = query.toLowerCase();
+                    foods = foods.stream()
+                            .filter(f -> f.getName().toLowerCase().contains(q))
+                            .collect(Collectors.toList());
+                }
+            } catch (IllegalArgumentException e) {
+                foods = foodItemRepository.findByIsActiveTrue();
+            }
+        } else if (query == null || query.trim().isEmpty()) {
             foods = foodItemRepository.findByIsActiveTrue();
         } else {
             // Search by name
@@ -75,5 +88,29 @@ public class FoodItemService {
         }
         
         return dto;
+    }
+
+    // Backward-compatible single-arg search
+    public List<FoodItemResponseDTO> searchFoods(String query) {
+        return searchFoods(query, null);
+    }
+
+    // Get category counts for the sidebar/tabs
+    public List<Map<String, Object>> getCategoryCounts() {
+        List<FoodItem> allActive = foodItemRepository.findByIsActiveTrue();
+        Map<FoodCategory, Long> counts = allActive.stream()
+                .collect(Collectors.groupingBy(FoodItem::getCategory, Collectors.counting()));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (FoodCategory cat : FoodCategory.values()) {
+            long count = counts.getOrDefault(cat, 0L);
+            if (count > 0) {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("category", cat.name());
+                item.put("count", count);
+                result.add(item);
+            }
+        }
+        return result;
     }
 }

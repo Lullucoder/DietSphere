@@ -53,30 +53,52 @@
 }
 
 .auth-side-logo {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: var(--radius-lg);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: white;
   margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 16px rgba(15, 118, 110, 0.3);
 }
 
 .auth-side-content h1 {
-  font-size: 1.65rem;
-  font-weight: 700;
+  font-size: 1.85rem;
+  font-weight: 800;
   color: #f8fafc;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .auth-side-content p {
   color: #64748b;
   font-size: 0.92rem;
   line-height: 1.6;
+}
+
+/* Feature pills on auth side */
+.auth-side-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.auth-feature {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 /* Right form panel */

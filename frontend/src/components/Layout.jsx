@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import { FiGrid, FiPlusCircle, FiClock, FiBarChart2, FiUser, FiLogOut } from 'react-icons/fi'
 
 function Layout({ user, onLogout, children }) {
   const location = useLocation()
@@ -6,11 +7,11 @@ function Layout({ user, onLogout, children }) {
   const isActive = (path) => location.pathname === path
 
   const navItems = [
-    { path: '/dashboard', icon: '◫', label: 'Dashboard' },
-    { path: '/log-food',  icon: '✎', label: 'Log Food' },
-    { path: '/history',   icon: '☰', label: 'Meal History' },
-    { path: '/nutrition', icon: '◔', label: 'Nutrition' },
-    { path: '/profile',   icon: '⚙', label: 'Profile' },
+    { path: '/dashboard', icon: <FiGrid size={18} />,       label: 'Dashboard' },
+    { path: '/log-food',  icon: <FiPlusCircle size={18} />,  label: 'Log Food' },
+    { path: '/history',   icon: <FiClock size={18} />,       label: 'Meal History' },
+    { path: '/nutrition', icon: <FiBarChart2 size={18} />,   label: 'Nutrition' },
+    { path: '/profile',   icon: <FiUser size={18} />,        label: 'Profile' },
   ]
 
   const initials = user?.username ? user.username.substring(0, 2) : '??'
@@ -22,8 +23,8 @@ function Layout({ user, onLogout, children }) {
         <div className="sidebar-brand">
           <div className="sidebar-brand-icon">🌿</div>
           <div className="sidebar-brand-text">
-            <h2>Diet Balance</h2>
-            <span>Tracker</span>
+            <h2>NutriTrack</h2>
+            <span>Diet Balance</span>
           </div>
         </div>
 
@@ -49,7 +50,7 @@ function Layout({ user, onLogout, children }) {
             </div>
           </div>
           <button onClick={onLogout} className="sidebar-logout">
-            <span className="sidebar-link-icon">↪</span>
+            <span className="sidebar-link-icon"><FiLogOut size={16} /></span>
             Sign Out
           </button>
         </div>
