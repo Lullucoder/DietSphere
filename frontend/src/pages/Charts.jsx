@@ -56,7 +56,7 @@ function Charts({ user, onLogout }) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5"
+      className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5"
     >
       {children}
     </motion.div>
@@ -67,23 +67,23 @@ function Charts({ user, onLogout }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
               <FiBarChart2 size={18} className="text-white" />
             </div>
             Charts & Insights
           </h1>
-          <p className="text-sm text-slate-500 mt-1">Visual breakdown of your nutrition journey</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Visual breakdown of your nutrition journey</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
           {PERIOD_OPTIONS.map(p => (
             <button
               key={p.key}
               onClick={() => setDays(p.key)}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 days === p.key
-                  ? 'bg-white text-slate-800 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
               {p.label}
@@ -98,7 +98,7 @@ function Charts({ user, onLogout }) {
           Loading charts...
         </div>
       ) : !data ? (
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm text-center py-16">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center py-16">
           <div className="text-4xl mb-3 opacity-30">📊</div>
           <p className="text-slate-400 text-sm">No data available. Start logging meals to see charts!</p>
         </div>
@@ -109,7 +109,7 @@ function Charts({ user, onLogout }) {
           {card(0.05, <>
             <div className="flex items-center gap-2 mb-1">
               <FiTrendingUp size={16} className="text-brand-500" />
-              <h2 className="text-base font-bold text-slate-800">Calorie Trend</h2>
+              <h2 className="text-base font-bold text-slate-800 dark:text-white">Calorie Trend</h2>
             </div>
             <p className="text-xs text-slate-400 mb-4">Daily calorie intake over the past {days} days</p>
             <ResponsiveContainer width="100%" height={280}>
@@ -133,7 +133,7 @@ function Charts({ user, onLogout }) {
           {card(0.1, <>
             <div className="flex items-center gap-2 mb-1">
               <FiBarChart2 size={16} className="text-brand-500" />
-              <h2 className="text-base font-bold text-slate-800">Daily Macros</h2>
+              <h2 className="text-base font-bold text-slate-800 dark:text-white">Daily Macros</h2>
             </div>
             <p className="text-xs text-slate-400 mb-4">Protein, carbs & fat stacked per day</p>
             <ResponsiveContainer width="100%" height={280}>
@@ -157,7 +157,7 @@ function Charts({ user, onLogout }) {
             {card(0.15, <>
               <div className="flex items-center gap-2 mb-1">
                 <FiPieChart size={16} className="text-brand-500" />
-                <h2 className="text-base font-bold text-slate-800">Macro Split</h2>
+                <h2 className="text-base font-bold text-slate-800 dark:text-white">Macro Split</h2>
               </div>
               <p className="text-xs text-slate-400 mb-4">Overall macronutrient distribution</p>
               {data.macroSplit && (
@@ -205,7 +205,7 @@ function Charts({ user, onLogout }) {
             {card(0.2, <>
               <div className="flex items-center gap-2 mb-1">
                 <FiPieChart size={16} className="text-purple-500" />
-                <h2 className="text-base font-bold text-slate-800">Calories by Meal</h2>
+                <h2 className="text-base font-bold text-slate-800 dark:text-white">Calories by Meal</h2>
               </div>
               <p className="text-xs text-slate-400 mb-4">Calorie distribution across meal types</p>
               {data.mealTypeBreakdown?.length > 0 ? (
@@ -248,7 +248,7 @@ function Charts({ user, onLogout }) {
 
           {/* ====== 5. Nutrient Radar ====== */}
           {card(0.25, <>
-            <h2 className="text-base font-bold text-slate-800 mb-1">🎯 Nutrient Radar</h2>
+            <h2 className="text-base font-bold text-slate-800 dark:text-white mb-1">🎯 Nutrient Radar</h2>
             <p className="text-xs text-slate-400 mb-4">Daily average % of recommended intake (100% = meeting RDA)</p>
             {data.nutrientRadar?.length > 0 ? (
               <ResponsiveContainer width="100%" height={360}>
@@ -267,7 +267,7 @@ function Charts({ user, onLogout }) {
 
           {/* ====== 6. Top Foods Bar ====== */}
           {data.topFoods?.length > 0 && card(0.3, <>
-            <h2 className="text-base font-bold text-slate-800 mb-1">🏆 Most Logged Foods</h2>
+            <h2 className="text-base font-bold text-slate-800 dark:text-white mb-1">🏆 Most Logged Foods</h2>
             <p className="text-xs text-slate-400 mb-4">Your top foods by frequency</p>
             <div className="space-y-2.5">
               {data.topFoods.map((food, i) => {
@@ -284,10 +284,10 @@ function Charts({ user, onLogout }) {
                     <span className="w-5 text-xs font-bold text-slate-400 text-right">{i + 1}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-1">
-                        <span className="text-sm font-medium text-slate-700 truncate">{food.name}</span>
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{food.name}</span>
                         <span className="text-xs text-slate-400 flex-shrink-0 ml-2">{food.timesLogged}× · {Math.round(food.totalCalories)} kcal</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         <motion.div
                           className="h-full rounded-full bg-gradient-to-r from-brand-500 to-purple-500"
                           initial={{ width: 0 }}

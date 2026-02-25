@@ -77,7 +77,7 @@ function RegisterPage({ onRegister }) {
       </div>
 
       {/* Right — Register form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white dark:bg-slate-950">
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -89,11 +89,11 @@ function RegisterPage({ onRegister }) {
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-brand-500/20">
               🌿
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">NutriTrack</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">NutriTrack</h1>
           </div>
 
-          <h2 className="text-2xl font-bold text-slate-900 mb-1">Create your account</h2>
-          <p className="text-slate-500 mb-8">Start your nutrition journey today</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Create your account</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8">Start your nutrition journey today</p>
 
           {error && (
             <div className="bg-red-50 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium border border-red-200 flex items-center gap-2">
@@ -103,7 +103,7 @@ function RegisterPage({ onRegister }) {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 <FiUser className="inline mr-1.5 -mt-0.5" size={14} />Username
               </label>
               <input
@@ -114,12 +114,12 @@ function RegisterPage({ onRegister }) {
                 required
                 minLength="3"
                 placeholder="Choose a username"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 <FiMail className="inline mr-1.5 -mt-0.5" size={14} />Email
               </label>
               <input
@@ -129,13 +129,13 @@ function RegisterPage({ onRegister }) {
                 onChange={handleChange}
                 required
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   <FiLock className="inline mr-1.5 -mt-0.5" size={14} />Password
                 </label>
                 <input
@@ -146,11 +146,11 @@ function RegisterPage({ onRegister }) {
                   required
                   minLength="6"
                   placeholder="Min 6 chars"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   <FiCalendar className="inline mr-1.5 -mt-0.5" size={14} />Age
                 </label>
                 <input
@@ -162,7 +162,7 @@ function RegisterPage({ onRegister }) {
                   min="1"
                   max="120"
                   placeholder="Your age"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ function RegisterPage({ onRegister }) {
               )}
             </button>
 
-            <p className="text-center text-sm text-slate-500 mt-6">
+            <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
               Already have an account?{' '}
               <Link to="/login" className="text-brand-600 font-semibold hover:text-brand-700 transition-colors">
                 Sign in

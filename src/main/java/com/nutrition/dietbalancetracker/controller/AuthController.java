@@ -2,14 +2,19 @@ package com.nutrition.dietbalancetracker.controller;
 
 import com.nutrition.dietbalancetracker.dto.LoginRequestDTO;
 import com.nutrition.dietbalancetracker.dto.LoginResponseDTO;
+import com.nutrition.dietbalancetracker.dto.PasswordChangeDTO;
 import com.nutrition.dietbalancetracker.dto.UserProfileDTO;
 import com.nutrition.dietbalancetracker.dto.UserRegistrationDTO;
 import com.nutrition.dietbalancetracker.model.User;
+import com.nutrition.dietbalancetracker.repository.DietaryEntryRepository;
+import com.nutrition.dietbalancetracker.repository.NutritionGoalRepository;
 import com.nutrition.dietbalancetracker.repository.UserRepository;
 import com.nutrition.dietbalancetracker.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,6 +32,9 @@ public class AuthController {
     
     private final UserService userService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final DietaryEntryRepository dietaryEntryRepository;
+    private final NutritionGoalRepository nutritionGoalRepository;
     
     // POST /api/auth/register
     @PostMapping("/register")
@@ -76,6 +84,46 @@ public class AuthController {
                     }
                     User saved = userRepository.save(user);
                     return ResponseEntity.ok(toProfileDTO(saved));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // PUT /api/auth/change-password?userId=1
+    @PutMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(
+            @RequestParam Long userId,
+            @Valid @RequestBody PasswordChangeDTO dto) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
+                        return ResponseEntity.badRequest()
+                                .body(Map.of("message", "Current password is incorrect"));
+                    }
+                    user.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+                    userRepository.save(user);
+                    return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE /api/auth/account?userId=1
+    @DeleteMapping("/account")
+    @Transactional
+    public ResponseEntity<Map<String, String>> deleteAccount(
+            @RequestParam Long userId,
+            @RequestBody Map<String, String> body) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    String password = body.get("password");
+                    if (password == null || !passwordEncoder.matches(password, user.getPasswordHash())) {
+                        return ResponseEntity.badRequest()
+                                .body(Map.of("message", "Password is incorrect"));
+                    }
+                    // Delete related data first
+                    nutritionGoalRepository.deleteByUserId(userId);
+                    dietaryEntryRepository.deleteAll(user.getDietaryEntries());
+                    userRepository.delete(user);
+                    return ResponseEntity.ok(Map.of("message", "Account deleted successfully"));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

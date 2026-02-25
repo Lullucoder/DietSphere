@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { ThemeProvider } from './contexts/ThemeContext'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Dashboard from './pages/Dashboard'
@@ -10,6 +11,7 @@ import NutritionAnalysis from './pages/NutritionAnalysis'
 import UserProfile from './pages/UserProfile'
 import AiChat from './pages/AiChat'
 import Charts from './pages/Charts'
+import GoalSettings from './pages/GoalSettings'
 import './App.css'
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
   }
 
   return (
+    <ThemeProvider>
     <Router>
       <div className="app">
         <Toaster
@@ -86,10 +89,15 @@ function App() {
             path="/charts" 
             element={user ? <Charts user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
           />
+          <Route 
+            path="/goals" 
+            element={user ? <GoalSettings user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
       </div>
     </Router>
+    </ThemeProvider>
   )
 }
 

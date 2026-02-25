@@ -1,10 +1,12 @@
 import { Link, useLocation } from 'react-router-dom'
-import { FiGrid, FiPlusCircle, FiClock, FiBarChart2, FiUser, FiLogOut, FiMenu, FiX, FiCpu, FiPieChart } from 'react-icons/fi'
+import { FiGrid, FiPlusCircle, FiClock, FiBarChart2, FiUser, FiLogOut, FiMenu, FiX, FiCpu, FiPieChart, FiTarget, FiMoon, FiSun } from 'react-icons/fi'
 import { useState } from 'react'
+import { useTheme } from '../contexts/ThemeContext'
 
 function Layout({ user, onLogout, children }) {
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { dark, toggle } = useTheme()
 
   const isActive = (path) => location.pathname === path
 
@@ -15,6 +17,7 @@ function Layout({ user, onLogout, children }) {
     { path: '/nutrition', icon: <FiBarChart2 size={18} />,   label: 'Nutrition' },
     { path: '/ai-chat',   icon: <FiCpu size={18} />,         label: 'NutriBot AI' },
     { path: '/charts',    icon: <FiPieChart size={18} />,    label: 'Charts' },
+    { path: '/goals',     icon: <FiTarget size={18} />,      label: 'Goals' },
     { path: '/profile',   icon: <FiUser size={18} />,        label: 'Profile' },
   ]
 
@@ -73,6 +76,14 @@ function Layout({ user, onLogout, children }) {
             <div className="text-[11px] text-slate-500">Member</div>
           </div>
         </div>
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggle}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 w-full transition-all duration-200 mb-1"
+        >
+          {dark ? <FiSun size={16} /> : <FiMoon size={16} />}
+          {dark ? 'Light Mode' : 'Dark Mode'}
+        </button>
         <button 
           onClick={onLogout}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 w-full transition-all duration-200"
@@ -85,7 +96,7 @@ function Layout({ user, onLogout, children }) {
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col w-[260px] bg-slate-900 fixed inset-y-0 left-0 z-50">
         <SidebarContent />
@@ -107,11 +118,11 @@ function Layout({ user, onLogout, children }) {
       {/* Main Content */}
       <main className="flex-1 lg:ml-[260px] min-h-screen">
         {/* Mobile header */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-30">
-          <button onClick={() => setMobileOpen(true)} className="p-2 rounded-lg hover:bg-slate-100 text-slate-600">
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
+          <button onClick={() => setMobileOpen(true)} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
             <FiMenu size={20} />
           </button>
-          <span className="text-sm font-bold text-slate-800">NutriTrack</span>
+          <span className="text-sm font-bold text-slate-800 dark:text-white">NutriTrack</span>
           <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-700 uppercase">
             {initials}
           </div>

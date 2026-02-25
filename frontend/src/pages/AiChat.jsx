@@ -83,22 +83,22 @@ function AiChat({ user, onLogout }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
               <FiCpu size={18} className="text-white" />
             </div>
             NutriBot
           </h1>
-          <p className="text-sm text-slate-500 mt-1">AI-powered nutrition assistant — knows your today's meals</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">AI-powered nutrition assistant — knows your today's meals</p>
         </div>
         <div className="flex items-center gap-2">
           {/* Status pill */}
           <div className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${
             ollamaStatus === null
-              ? 'border-slate-200 text-slate-400 bg-slate-50'
+              ? 'border-slate-200 dark:border-slate-700 text-slate-400 bg-slate-50 dark:bg-slate-800'
               : ollamaStatus
-                ? 'border-green-200 text-green-700 bg-green-50'
-                : 'border-red-200 text-red-600 bg-red-50'
+                ? 'border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30'
+                : 'border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30'
           }`}>
             <span className={`w-1.5 h-1.5 rounded-full ${
               ollamaStatus === null ? 'bg-slate-300 animate-pulse' : ollamaStatus ? 'bg-green-500' : 'bg-red-500'
@@ -106,7 +106,7 @@ function AiChat({ user, onLogout }) {
             {ollamaStatus === null ? 'Checking...' : ollamaStatus ? 'Ollama Online' : 'Ollama Offline'}
           </div>
           {messages.length > 0 && (
-            <button onClick={clearChat} className="p-2 rounded-xl border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-all" title="Clear chat">
+            <button onClick={clearChat} className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-red-500 hover:border-red-200 dark:hover:border-red-700 transition-all" title="Clear chat">
               <FiTrash2 size={15} />
             </button>
           )}
@@ -141,7 +141,7 @@ function AiChat({ user, onLogout }) {
       )}
 
       {/* Chat Container */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col" style={{ height: 'calc(100vh - 260px)', minHeight: '400px' }}>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col" style={{ height: 'calc(100vh - 260px)', minHeight: '400px' }}>
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-4">
@@ -150,7 +150,7 @@ function AiChat({ user, onLogout }) {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-brand-500/20">
                 <FiZap size={28} className="text-white" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Hi, I'm NutriBot!</h3>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">Hi, I'm NutriBot!</h3>
               <p className="text-sm text-slate-400 max-w-md mb-6">
                 I can analyze your meals, suggest foods to balance your diet, and answer any nutrition questions. I already know what you've eaten today!
               </p>
@@ -164,7 +164,7 @@ function AiChat({ user, onLogout }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     onClick={() => sendMessage(prompt.text)}
-                    className="text-left px-3.5 py-3 rounded-xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/50 transition-all text-sm text-slate-600 group"
+                    className="text-left px-3.5 py-3 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-600 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 transition-all text-sm text-slate-600 dark:text-slate-300 group"
                   >
                     <span className="mr-2">{prompt.emoji}</span>
                     <span className="group-hover:text-brand-700 transition-colors">{prompt.text}</span>
@@ -191,8 +191,8 @@ function AiChat({ user, onLogout }) {
                     msg.role === 'user'
                       ? 'bg-gradient-to-r from-brand-600 to-purple-600 text-white rounded-br-md'
                       : msg.isError
-                        ? 'bg-red-50 text-red-700 border border-red-100 rounded-bl-md'
-                        : 'bg-slate-50 text-slate-700 border border-slate-100 rounded-bl-md'
+                        ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-100 dark:border-red-800 rounded-bl-md'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
                   }`}>
                     <div className="whitespace-pre-wrap">{msg.content}</div>
                   </div>
@@ -214,7 +214,7 @@ function AiChat({ user, onLogout }) {
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
                     <FiCpu size={14} className="text-white" />
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-md px-4 py-3">
+                  <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-md px-4 py-3">
                     <div className="flex gap-1.5 items-center">
                       <span className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -229,7 +229,7 @@ function AiChat({ user, onLogout }) {
         </div>
 
         {/* Input Bar */}
-        <div className="border-t border-slate-100 px-4 sm:px-6 py-3">
+        <div className="border-t border-slate-100 dark:border-slate-800 px-4 sm:px-6 py-3">
           <div className="flex items-end gap-2">
             <textarea
               ref={inputRef}
@@ -238,7 +238,7 @@ function AiChat({ user, onLogout }) {
               onKeyDown={handleKeyDown}
               placeholder="Ask NutriBot anything about your diet..."
               rows={1}
-              className="flex-1 resize-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all"
+              className="flex-1 resize-none rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm text-slate-800 dark:text-white placeholder-slate-400 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all"
               style={{ maxHeight: '120px' }}
               onInput={(e) => {
                 e.target.style.height = 'auto'

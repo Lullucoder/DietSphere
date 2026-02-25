@@ -5,8 +5,17 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    transition: color-scheme 0.2s;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
   body {
     @apply font-sans antialiased bg-slate-50 text-slate-900 text-[15px] leading-relaxed;
+  }
+  html.dark body {
+    @apply bg-slate-950 text-slate-100;
   }
   #root {
     @apply min-h-screen;
@@ -19,6 +28,9 @@
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-slate-200 rounded;
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700;
   }
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-slate-400;

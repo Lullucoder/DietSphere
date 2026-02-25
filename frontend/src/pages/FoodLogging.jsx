@@ -100,8 +100,8 @@ function FoodLogging({ user, onLogout }) {
       {/* Header + Meal Type Pills */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Log a Meal</h1>
-          <p className="text-slate-500 text-sm mt-1">Find and add food to your daily tracker</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Log a Meal</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Find and add food to your daily tracker</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {Object.entries(MEAL_TYPE_CONFIG).map(([type, config]) => (
@@ -121,7 +121,7 @@ function FoodLogging({ user, onLogout }) {
       </div>
 
       {/* Search Card */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 mb-6">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5 mb-6">
         {/* Search Input */}
         <div className="relative mb-4">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -132,7 +132,7 @@ function FoodLogging({ user, onLogout }) {
             onChange={handleSearch}
             placeholder="Search for any food... (e.g., paneer, dosa, biryani)"
             autoFocus
-            className="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+            className="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
           />
           {searchQuery && (
             <button onClick={() => { setSearchQuery(''); searchFoods('', activeCategory) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -194,10 +194,10 @@ function FoodLogging({ user, onLogout }) {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => handleQuickLog(food)}
-                className={`relative bg-white rounded-2xl border p-4 cursor-pointer transition-all duration-200 hover:shadow-md group ${
+                className={`relative bg-white dark:bg-slate-900 rounded-2xl border p-4 cursor-pointer transition-all duration-200 hover:shadow-md group ${
                   isSelected
-                    ? 'border-brand-400 ring-2 ring-brand-100 shadow-md'
-                    : 'border-slate-100 hover:border-brand-200'
+                    ? 'border-brand-400 ring-2 ring-brand-100 dark:ring-brand-500/20 shadow-md'
+                    : 'border-slate-100 dark:border-slate-800 hover:border-brand-200'
                 }`}
               >
                 {/* Emoji Header */}
@@ -206,7 +206,7 @@ function FoodLogging({ user, onLogout }) {
                 </div>
 
                 {/* Info */}
-                <h3 className="text-sm font-semibold text-slate-800 mb-0.5 line-clamp-1">{food.name}</h3>
+                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-0.5 line-clamp-1">{food.name}</h3>
                 <p className="text-[11px] text-slate-400 line-clamp-1 mb-3">{food.description}</p>
 
                 {/* Nutrient Chips */}
@@ -256,7 +256,7 @@ function FoodLogging({ user, onLogout }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 lg:left-[260px] z-40 bg-white border-t border-slate-200 shadow-2xl px-6 py-5"
+            className="fixed bottom-0 left-0 right-0 lg:left-[260px] z-40 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl px-6 py-5"
           >
             <button onClick={() => { setShowConfirm(false); setSelectedFood(null) }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
               <FiX size={18} />

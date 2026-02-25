@@ -31,12 +31,12 @@ function NutritionAnalysis({ user, onLogout }) {
     return (
       <div className="space-y-1.5">
         <div className="flex justify-between items-baseline">
-          <span className="text-sm font-semibold text-slate-700">{nutrient.name}</span>
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{nutrient.name}</span>
           <span className="text-xs text-slate-400">
             {nutrient.consumed.toFixed(1)}{unit} / {nutrient.recommended.toFixed(0)}{unit}
           </span>
         </div>
-        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+        <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
           <motion.div
             className={`h-full rounded-full ${nutrientBgTw(nutrient.percentage)}`}
             initial={{ width: 0 }}
@@ -57,18 +57,18 @@ function NutritionAnalysis({ user, onLogout }) {
       {/* Header + Period Toggle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Nutrition Analysis</h1>
-          <p className="text-sm text-slate-500 mt-1">Detailed breakdown of your nutrient intake</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Nutrition Analysis</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Detailed breakdown of your nutrient intake</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
           {['today', 'week'].map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 period === p
-                  ? 'bg-white text-slate-800 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
               {p === 'today' ? '📅 Today' : '📊 This Week'}
@@ -83,7 +83,7 @@ function NutritionAnalysis({ user, onLogout }) {
           Loading analysis...
         </div>
       ) : !analysis ? (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
           <div className="text-center py-16">
             <div className="text-4xl mb-3 opacity-30">📊</div>
             <p className="text-slate-400 text-sm">No meals logged for this period. Start logging to see your nutrition analysis!</p>
@@ -103,12 +103,12 @@ function NutritionAnalysis({ user, onLogout }) {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5"
+                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5"
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">{s.label}</p>
-                    <p className={`text-2xl font-bold mt-1 ${s.special ? '' : 'text-slate-800'}`} style={s.special ? { color: nutrientColor(analysis.overallScore) } : {}}>
+                    <p className={`text-2xl font-bold mt-1 ${s.special ? '' : 'text-slate-800 dark:text-white'}`} style={s.special ? { color: nutrientColor(analysis.overallScore) } : {}}>
                       {s.value}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5">{s.unit}</p>
@@ -126,7 +126,7 @@ function NutritionAnalysis({ user, onLogout }) {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.25 }}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm text-center py-8 px-6 mb-6"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center py-8 px-6 mb-6"
           >
             <div className="text-4xl mb-2">{scoreEmoji(analysis.overallScore)}</div>
             <div className="text-4xl font-extrabold" style={{ color: nutrientColor(analysis.overallScore) }}>
@@ -134,7 +134,7 @@ function NutritionAnalysis({ user, onLogout }) {
             </div>
             <p className="text-sm text-slate-400 mt-1">Overall Nutrition Score</p>
             <div className="max-w-xs mx-auto mt-4">
-              <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
                   initial={{ width: 0 }}
@@ -151,11 +151,11 @@ function NutritionAnalysis({ user, onLogout }) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 mb-6"
           >
             <div className="flex items-center gap-2 mb-1">
               <FiActivity size={16} className="text-brand-500" />
-              <h2 className="text-base font-bold text-slate-800">Macronutrients</h2>
+              <h2 className="text-base font-bold text-slate-800 dark:text-white">Macronutrients</h2>
             </div>
             <p className="text-xs text-slate-400 mb-5">Protein, carbs, and fat breakdown</p>
             <div className="space-y-5">
@@ -170,11 +170,11 @@ function NutritionAnalysis({ user, onLogout }) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 mb-6"
           >
             <div className="flex items-center gap-2 mb-1">
               <FiTrendingUp size={16} className="text-brand-500" />
-              <h2 className="text-base font-bold text-slate-800">Vitamins & Minerals</h2>
+              <h2 className="text-base font-bold text-slate-800 dark:text-white">Vitamins & Minerals</h2>
             </div>
             <p className="text-xs text-slate-400 mb-5">Micronutrient levels</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
@@ -190,15 +190,15 @@ function NutritionAnalysis({ user, onLogout }) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55 }}
-              className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6"
+              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 mb-6"
             >
-              <h2 className="text-base font-bold text-slate-800 mb-1">💡 Recommendations</h2>
+              <h2 className="text-base font-bold text-slate-800 dark:text-white mb-1">💡 Recommendations</h2>
               <p className="text-xs text-slate-400 mb-5">Personalised suggestions to improve your diet</p>
               <div className="space-y-3">
                 {analysis.recommendations.map((rec, idx) => (
                   <motion.div
                     key={idx}
-                    className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100"
+                    className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6 + idx * 0.05 }}
@@ -207,8 +207,8 @@ function NutritionAnalysis({ user, onLogout }) {
                       rec.priority === 'HIGH' ? 'bg-red-500' : rec.priority === 'MEDIUM' ? 'bg-amber-400' : 'bg-green-400'
                     }`} />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-700">{rec.nutrient}</p>
-                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{rec.message}</p>
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{rec.nutrient}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{rec.message}</p>
                       {rec.foods?.length > 0 && (
                         <p className="text-xs text-brand-600 font-medium mt-1.5">🍴 Try: {rec.foods.join(', ')}</p>
                       )}
