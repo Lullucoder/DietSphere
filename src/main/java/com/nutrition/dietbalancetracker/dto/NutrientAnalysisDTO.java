@@ -1,7 +1,8 @@
 package com.nutrition.dietbalancetracker.dto;
 
-import lombok.Data;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * NUTRIENT ANALYSIS RESPONSE DTO

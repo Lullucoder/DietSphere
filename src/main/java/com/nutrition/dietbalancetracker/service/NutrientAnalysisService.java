@@ -1,16 +1,22 @@
 package com.nutrition.dietbalancetracker.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
 import com.nutrition.dietbalancetracker.dto.NutrientAnalysisDTO;
 import com.nutrition.dietbalancetracker.dto.NutrientAnalysisDTO.NutrientDetail;
 import com.nutrition.dietbalancetracker.dto.NutrientAnalysisDTO.Recommendation;
 import com.nutrition.dietbalancetracker.model.DietaryEntry;
 import com.nutrition.dietbalancetracker.model.NutrientProfile;
 import com.nutrition.dietbalancetracker.repository.DietaryEntryRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import lombok.RequiredArgsConstructor;
 
 /**
  * NUTRIENT ANALYSIS SERVICE

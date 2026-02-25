@@ -1,11 +1,15 @@
 package com.nutrition.dietbalancetracker.config;
 
-import com.nutrition.dietbalancetracker.model.*;
-import com.nutrition.dietbalancetracker.repository.FoodItemRepository;
-import com.nutrition.dietbalancetracker.repository.NutrientProfileRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.nutrition.dietbalancetracker.model.FoodCategory;
+import com.nutrition.dietbalancetracker.model.FoodItem;
+import com.nutrition.dietbalancetracker.model.NutrientProfile;
+import com.nutrition.dietbalancetracker.repository.FoodItemRepository;
+import com.nutrition.dietbalancetracker.repository.NutrientProfileRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * DATA INITIALIZER

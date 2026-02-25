@@ -1,7 +1,8 @@
 package com.nutrition.dietbalancetracker.dto;
 
-import lombok.Data;
 import java.time.LocalDateTime;
+
+import lombok.Data;
 
 /**
  * USER PROFILE DTO

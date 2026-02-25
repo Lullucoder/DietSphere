@@ -1,9 +1,10 @@
 package com.nutrition.dietbalancetracker.dto;
 
-import com.nutrition.dietbalancetracker.model.MealType;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+
+import com.nutrition.dietbalancetracker.model.MealType;
+
+import lombok.Data;
 
 /**
  * DIETARY ENTRY RESPONSE DTO

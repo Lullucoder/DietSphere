@@ -1,6 +1,7 @@
 package com.nutrition.dietbalancetracker.dto;
 
 import com.nutrition.dietbalancetracker.model.FoodCategory;
+
 import lombok.Data;
 
 /**
