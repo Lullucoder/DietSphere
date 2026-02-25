@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { FiGrid, FiPlusCircle, FiClock, FiBarChart2, FiUser, FiLogOut, FiMenu, FiX, FiCpu } from 'react-icons/fi'
+import { FiGrid, FiPlusCircle, FiClock, FiBarChart2, FiUser, FiLogOut, FiMenu, FiX, FiCpu, FiPieChart } from 'react-icons/fi'
 import { useState } from 'react'
 
 function Layout({ user, onLogout, children }) {
@@ -14,6 +14,7 @@ function Layout({ user, onLogout, children }) {
     { path: '/history',   icon: <FiClock size={18} />,       label: 'Meal History' },
     { path: '/nutrition', icon: <FiBarChart2 size={18} />,   label: 'Nutrition' },
     { path: '/ai-chat',   icon: <FiCpu size={18} />,         label: 'NutriBot AI' },
+    { path: '/charts',    icon: <FiPieChart size={18} />,    label: 'Charts' },
     { path: '/profile',   icon: <FiUser size={18} />,        label: 'Profile' },
   ]
 
