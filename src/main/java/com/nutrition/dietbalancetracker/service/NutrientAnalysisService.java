@@ -14,7 +14,9 @@ import com.nutrition.dietbalancetracker.dto.NutrientAnalysisDTO.NutrientDetail;
 import com.nutrition.dietbalancetracker.dto.NutrientAnalysisDTO.Recommendation;
 import com.nutrition.dietbalancetracker.model.DietaryEntry;
 import com.nutrition.dietbalancetracker.model.NutrientProfile;
+import com.nutrition.dietbalancetracker.model.User;
 import com.nutrition.dietbalancetracker.repository.DietaryEntryRepository;
+import com.nutrition.dietbalancetracker.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class NutrientAnalysisService {
 
     private final DietaryEntryRepository dietaryEntryRepository;
+    private final UserRepository userRepository;
 
     /**
      * Analyze nutrition for today's meals.
@@ -41,7 +44,8 @@ public class NutrientAnalysisService {
         List<DietaryEntry> entries = dietaryEntryRepository
                 .findByUserIdAndConsumedAtBetweenOrderByConsumedAtDesc(userId, startOfDay, endOfDay);
 
-        return buildAnalysis(entries, 1);
+        User user = userRepository.findById(userId).orElse(null);
+        return buildAnalysis(entries, 1, user);
     }
 
     /**
@@ -61,14 +65,15 @@ public class NutrientAnalysisService {
         }
         int days = Math.max(activeDays.size(), 1);
 
-        return buildAnalysis(entries, days);
+        User user = userRepository.findById(userId).orElse(null);
+        return buildAnalysis(entries, days, user);
     }
 
     /**
      * Core analysis logic: aggregate nutrients from entries,
      * compare against recommended daily values, generate recommendations.
      */
-    private NutrientAnalysisDTO buildAnalysis(List<DietaryEntry> entries, int days) {
+    private NutrientAnalysisDTO buildAnalysis(List<DietaryEntry> entries, int days, User user) {
         NutrientAnalysisDTO dto = new NutrientAnalysisDTO();
         dto.setMealCount(entries.size());
 
@@ -104,10 +109,38 @@ public class NutrientAnalysisService {
         double d = days;
         dto.setTotalCalories(calories / d);
 
-        // Recommended daily values (adult approximate)
+        // ── BMI-adjusted Recommended Daily Values ──
+        // Base values (adult approximate)
         double recProtein = 50, recCarbs = 275, recFat = 78, recFiber = 28;
         double recVitA = 900, recVitC = 90, recVitD = 20, recVitE = 15, recVitK = 120, recVitB12 = 2.4;
         double recCalcium = 1000, recIron = 18, recMagnesium = 400, recZinc = 11, recPotassium = 2600;
+
+        // Adjust RDAs based on user's BMI profile
+        if (user != null && user.getBmi() != null) {
+            Double bmi = user.getBmi();
+            if (bmi < 18.5) {
+                // Underweight: boost calories & protein to encourage healthy weight gain
+                recProtein *= 1.3;   // +30% protein
+                recCarbs *= 1.2;     // +20% carbs
+                recFat *= 1.1;       // +10% fat
+                recCalcium *= 1.15;  // bone support
+                recIron *= 1.1;
+            } else if (bmi >= 25 && bmi < 30) {
+                // Overweight: moderate reduction in calorie-dense macros
+                recCarbs *= 0.85;    // -15% carbs
+                recFat *= 0.85;      // -15% fat
+                recProtein *= 1.1;   // slightly more protein for satiety
+                recFiber *= 1.15;    // +15% fiber for fullness
+            } else if (bmi >= 30) {
+                // Obese: more significant reduction, higher protein & fiber
+                recCarbs *= 0.75;    // -25% carbs
+                recFat *= 0.75;      // -25% fat
+                recProtein *= 1.2;   // +20% protein for satiety & muscle preservation
+                recFiber *= 1.25;    // +25% fiber
+                recVitD *= 1.3;      // obese individuals often low in Vit D
+            }
+            // Normal weight (18.5-25): keep defaults
+        }
 
         // Macronutrients
         List<NutrientDetail> macros = new ArrayList<>();

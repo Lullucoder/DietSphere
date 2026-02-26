@@ -44,6 +44,8 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setAge(dto.getAge());
+        user.setWeightKg(dto.getWeightKg());
+        user.setHeightCm(dto.getHeightCm());
         user.setRole(UserRole.USER);
         
         // Save to database
@@ -53,7 +55,8 @@ public class UserService {
         String token = jwtTokenProvider.generateToken(user.getUsername());
         
         // Return response
-        return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId());
+        return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId(),
+                user.getBmi(), user.getBmiCategory());
     }
     
     // Login user
@@ -71,6 +74,7 @@ public class UserService {
         String token = jwtTokenProvider.generateToken(user.getUsername());
         
         // Return response
-        return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId());
+        return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId(),
+                user.getBmi(), user.getBmiCategory());
     }
 }

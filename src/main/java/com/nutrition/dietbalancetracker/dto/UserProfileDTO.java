@@ -16,6 +16,10 @@ public class UserProfileDTO {
     private String email;
     private Integer age;
     private String role;
+    private Double weightKg;
+    private Double heightCm;
+    private Double bmi;
+    private String bmiCategory;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

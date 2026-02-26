@@ -125,6 +125,45 @@ public class User {
      */
     @Column(nullable = false)
     private Integer age;
+
+    /**
+     * WEIGHT - User's weight in kilograms.
+     * Used to calculate BMI and personalise nutrient recommendations.
+     */
+    @Column
+    private Double weightKg;
+
+    /**
+     * HEIGHT - User's height in centimetres.
+     * Used together with weight to calculate BMI.
+     */
+    @Column
+    private Double heightCm;
+
+    // ========================================
+    // BMI CALCULATION HELPERS
+    // ========================================
+
+    /**
+     * Calculate Body Mass Index: weight(kg) / (height(m))^2
+     */
+    public Double getBmi() {
+        if (weightKg == null || heightCm == null || heightCm <= 0) return null;
+        double heightM = heightCm / 100.0;
+        return Math.round((weightKg / (heightM * heightM)) * 10.0) / 10.0;
+    }
+
+    /**
+     * Human-readable BMI category.
+     */
+    public String getBmiCategory() {
+        Double bmi = getBmi();
+        if (bmi == null) return "Unknown";
+        if (bmi < 18.5) return "Underweight";
+        if (bmi < 25)   return "Normal weight";
+        if (bmi < 30)   return "Overweight";
+        return "Obese";
+    }
     
     // ========================================
     // RELATIONSHIPS TO OTHER TABLES

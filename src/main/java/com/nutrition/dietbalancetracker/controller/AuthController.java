@@ -82,6 +82,12 @@ public class AuthController {
                     if (updates.containsKey("age")) {
                         user.setAge(((Number) updates.get("age")).intValue());
                     }
+                    if (updates.containsKey("weightKg")) {
+                        user.setWeightKg(((Number) updates.get("weightKg")).doubleValue());
+                    }
+                    if (updates.containsKey("heightCm")) {
+                        user.setHeightCm(((Number) updates.get("heightCm")).doubleValue());
+                    }
                     User saved = userRepository.save(user);
                     return ResponseEntity.ok(toProfileDTO(saved));
                 })
@@ -135,6 +141,10 @@ public class AuthController {
         dto.setEmail(user.getEmail());
         dto.setAge(user.getAge());
         dto.setRole(user.getRole().name());
+        dto.setWeightKg(user.getWeightKg());
+        dto.setHeightCm(user.getHeightCm());
+        dto.setBmi(user.getBmi());
+        dto.setBmiCategory(user.getBmiCategory());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;

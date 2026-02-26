@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.nutrition.dietbalancetracker.model.DietaryEntry;
+import com.nutrition.dietbalancetracker.model.User;
 import com.nutrition.dietbalancetracker.repository.DietaryEntryRepository;
+import com.nutrition.dietbalancetracker.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AiService {
 
     private final DietaryEntryRepository dietaryEntryRepository;
+    private final UserRepository userRepository;
 
     @Value("${ollama.base-url:http://localhost:11434}")
     private String ollamaBaseUrl;
@@ -56,8 +59,11 @@ public class AiService {
             // 1) Build nutritional context from today's meals
             String dietContext = buildDietContext(userId);
 
+            // 1b) Build user profile context (BMI, weight, height)
+            String profileContext = buildProfileContext(userId);
+
             // 2) System prompt
-            String systemPrompt = buildSystemPrompt(dietContext);
+            String systemPrompt = buildSystemPrompt(dietContext, profileContext);
 
             // 3) Assemble messages list for Ollama /api/chat
             List<Map<String, String>> messages = new ArrayList<>();
@@ -115,6 +121,30 @@ public class AiService {
 
     /* ---- private helpers ---- */
 
+    private String buildProfileContext(Long userId) {
+        try {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) return "User profile not available.";
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("User profile: Age %d", user.getAge()));
+
+            if (user.getWeightKg() != null) {
+                sb.append(String.format(", Weight: %.1f kg", user.getWeightKg()));
+            }
+            if (user.getHeightCm() != null) {
+                sb.append(String.format(", Height: %.0f cm", user.getHeightCm()));
+            }
+            if (user.getBmi() != null) {
+                sb.append(String.format(", BMI: %.1f (%s)", user.getBmi(), user.getBmiCategory()));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            log.error("Error building profile context: {}", e.getMessage());
+            return "User profile not available.";
+        }
+    }
+
     private String buildDietContext(Long userId) {
         try {
             LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
@@ -160,7 +190,7 @@ public class AiService {
         }
     }
 
-    private String buildSystemPrompt(String dietContext) {
+    private String buildSystemPrompt(String dietContext, String profileContext) {
         return """
                 You are NutriBot, a friendly and knowledgeable AI nutrition assistant for the DietSphere diet balance tracking app.
 
@@ -170,17 +200,23 @@ public class AiService {
                 - Provide evidence-based dietary advice
                 - Recommend Indian foods (both North and South Indian) when relevant since the food database is predominantly Indian cuisine
                 - Be encouraging and supportive about their health journey
+                - Tailor your advice to the user's BMI category:
+                  * Underweight (BMI < 18.5): Suggest calorie-dense, nutrient-rich foods to gain healthy weight
+                  * Normal (BMI 18.5-24.9): Maintain balanced diet, focus on nutrient diversity
+                  * Overweight (BMI 25-29.9): Suggest lower-calorie, high-fiber, high-protein meals
+                  * Obese (BMI >= 30): Focus on sustainable calorie reduction, fiber-rich foods, lean proteins
 
                 Important guidelines:
                 - Keep responses concise (2-4 paragraphs max unless asked for detail)
                 - Use bullet points for lists
                 - Include specific food suggestions with approximate calorie/nutrient info when helpful
-                - Always be supportive and non-judgmental
+                - Always be supportive and non-judgmental about weight/BMI
                 - If you don't know something, say so honestly
                 - Never provide medical diagnosis or replace professional medical advice
                 - Use emojis sparingly to keep the tone friendly
 
-                Current user diet data:
-                """ + dietContext;
+                Current user profile:
+                """ + profileContext + "\n\n"
+                + "Current user diet data:\n" + dietContext;
     }
 }

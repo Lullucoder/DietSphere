@@ -5,7 +5,10 @@ import { FiUserPlus, FiUser, FiMail, FiLock, FiCalendar, FiArrowRight } from 're
 import api from '../services/api'
 
 function RegisterPage({ onRegister }) {
-  const [formData, setFormData] = useState({ username: '', email: '', password: '', age: '' })
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', age: '', weightKg: '', heightCm: '' })
+  const [heightMode, setHeightMode] = useState('cm') // 'cm' or 'ft'
+  const [feet, setFeet] = useState('')
+  const [inches, setInches] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -13,12 +16,45 @@ function RegisterPage({ onRegister }) {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
+  // Convert feet+inches to cm whenever they change
+  const handleFeetChange = (val) => {
+    setFeet(val)
+    const totalCm = (parseFloat(val || 0) * 30.48) + (parseFloat(inches || 0) * 2.54)
+    setFormData(prev => ({ ...prev, heightCm: totalCm > 0 ? Math.round(totalCm).toString() : '' }))
+  }
+  const handleInchesChange = (val) => {
+    setInches(val)
+    const totalCm = (parseFloat(feet || 0) * 30.48) + (parseFloat(val || 0) * 2.54)
+    setFormData(prev => ({ ...prev, heightCm: totalCm > 0 ? Math.round(totalCm).toString() : '' }))
+  }
+
+  // Live BMI preview
+  const bmiPreview = () => {
+    const w = parseFloat(formData.weightKg)
+    const h = parseFloat(formData.heightCm)
+    if (!w || !h || h <= 0) return null
+    const bmi = w / ((h / 100) ** 2)
+    let category = '', color = ''
+    if (bmi < 18.5) { category = 'Underweight'; color = 'text-blue-500' }
+    else if (bmi < 25) { category = 'Normal'; color = 'text-emerald-500' }
+    else if (bmi < 30) { category = 'Overweight'; color = 'text-amber-500' }
+    else { category = 'Obese'; color = 'text-red-500' }
+    return { value: bmi.toFixed(1), category, color }
+  }
+
+  const bmi = bmiPreview()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const response = await api.post('/api/auth/register', { ...formData, age: parseInt(formData.age) })
+      const response = await api.post('/api/auth/register', {
+        ...formData,
+        age: parseInt(formData.age),
+        weightKg: parseFloat(formData.weightKg),
+        heightCm: parseFloat(formData.heightCm),
+      })
       onRegister(response.data)
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')
@@ -101,7 +137,7 @@ function RegisterPage({ onRegister }) {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 <FiUser className="inline mr-1.5 -mt-0.5" size={14} />Username
@@ -166,6 +202,94 @@ function RegisterPage({ onRegister }) {
                 />
               </div>
             </div>
+
+            {/* Weight */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                ⚖️ Weight (kg)
+              </label>
+              <input
+                type="number"
+                name="weightKg"
+                value={formData.weightKg}
+                onChange={handleChange}
+                required
+                min="10"
+                max="300"
+                step="0.1"
+                placeholder="e.g. 65"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+              />
+            </div>
+
+            {/* Height with unit toggle */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  📏 Height
+                </label>
+                <div className="flex rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
+                  <button type="button" onClick={() => setHeightMode('cm')}
+                    className={`px-3 py-1 font-medium transition-all ${heightMode === 'cm' ? 'bg-brand-500 text-white' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                    cm
+                  </button>
+                  <button type="button" onClick={() => setHeightMode('ft')}
+                    className={`px-3 py-1 font-medium transition-all ${heightMode === 'ft' ? 'bg-brand-500 text-white' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                    ft / in
+                  </button>
+                </div>
+              </div>
+              {heightMode === 'cm' ? (
+                <input
+                  type="number"
+                  name="heightCm"
+                  value={formData.heightCm}
+                  onChange={handleChange}
+                  required
+                  min="50"
+                  max="280"
+                  step="1"
+                  placeholder="e.g. 170"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                />
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="number"
+                    min="1"
+                    max="8"
+                    value={feet}
+                    onChange={(e) => handleFeetChange(e.target.value)}
+                    required
+                    placeholder="Feet"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    max="11"
+                    value={inches}
+                    onChange={(e) => handleInchesChange(e.target.value)}
+                    placeholder="Inches"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* BMI Preview */}
+            {bmi && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700"
+              >
+                <span className="text-sm text-slate-500 dark:text-slate-400">Your BMI</span>
+                <span className={`text-sm font-bold ${bmi.color}`}>
+                  {bmi.value} &middot; {bmi.category}
+                </span>
+              </motion.div>
+            )}
 
             <button
               type="submit"

@@ -8,7 +8,7 @@ import Layout from '../components/Layout'
 function UserProfile({ user, onLogout, onUpdateUser }) {
   const [profile, setProfile] = useState(null)
   const [editing, setEditing] = useState(false)
-  const [formData, setFormData] = useState({ age: '', email: '' })
+  const [formData, setFormData] = useState({ age: '', email: '', weightKg: '', heightCm: '' })
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
 
@@ -25,7 +25,7 @@ function UserProfile({ user, onLogout, onUpdateUser }) {
     try {
       const response = await api.get(`/api/auth/profile?userId=${user.userId}`)
       setProfile(response.data)
-      setFormData({ age: response.data.age, email: response.data.email })
+      setFormData({ age: response.data.age, email: response.data.email, weightKg: response.data.weightKg || '', heightCm: response.data.heightCm || '' })
     } catch (err) { console.error('Error fetching profile:', err) }
     finally { setLoading(false) }
   }
@@ -49,6 +49,8 @@ function UserProfile({ user, onLogout, onUpdateUser }) {
       toast.success('Profile updated successfully!')
       const storedUser = JSON.parse(localStorage.getItem('user'))
       storedUser.email = response.data.email
+      storedUser.bmi = response.data.bmi
+      storedUser.bmiCategory = response.data.bmiCategory
       localStorage.setItem('user', JSON.stringify(storedUser))
       if (onUpdateUser) onUpdateUser(storedUser)
     } catch (err) { toast.error(err.response?.data?.message || 'Failed to update profile') }
@@ -143,7 +145,10 @@ function UserProfile({ user, onLogout, onUpdateUser }) {
             {[
               { label: 'Username', value: profile?.username, icon: <FiUser size={14} className="text-slate-400" /> },
               { label: 'Email', value: profile?.email, icon: <FiMail size={14} className="text-slate-400" /> },
-              { label: 'Age', value: `${profile?.age} years`, icon: <FiCalendar size={14} className="text-slate-400" /> }
+              { label: 'Age', value: `${profile?.age} years`, icon: <FiCalendar size={14} className="text-slate-400" /> },
+              { label: 'Weight', value: profile?.weightKg ? `${profile.weightKg} kg` : '—', icon: <span className="text-slate-400">⚖️</span> },
+              { label: 'Height', value: profile?.heightCm ? `${profile.heightCm} cm (${Math.floor(profile.heightCm / 30.48)}' ${Math.round((profile.heightCm / 2.54) % 12)}\"")` : '—', icon: <span className="text-slate-400">📏</span> },
+              { label: 'BMI', value: profile?.bmi ? `${profile.bmi} — ${profile.bmiCategory}` : '—', icon: <FiActivity size={14} className={profile?.bmiCategory === 'Underweight' ? 'text-amber-500' : profile?.bmiCategory === 'Normal weight' ? 'text-emerald-500' : profile?.bmiCategory === 'Overweight' ? 'text-orange-500' : 'text-red-500'} /> }
             ].map(field => (
               <div key={field.label} className="flex items-center justify-between py-3.5">
                 <div className="flex items-center gap-2.5">
@@ -185,6 +190,36 @@ function UserProfile({ user, onLogout, onUpdateUser }) {
                   value={formData.age}
                   onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) })}
                   required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                  ⚖️ Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  min="10"
+                  max="300"
+                  step="0.1"
+                  value={formData.weightKg}
+                  onChange={(e) => setFormData({ ...formData, weightKg: parseFloat(e.target.value) || '' })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                  📏 Height (cm)
+                </label>
+                <input
+                  type="number"
+                  min="50"
+                  max="280"
+                  step="1"
+                  value={formData.heightCm}
+                  onChange={(e) => setFormData({ ...formData, heightCm: parseFloat(e.target.value) || '' })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all"
                 />
               </div>

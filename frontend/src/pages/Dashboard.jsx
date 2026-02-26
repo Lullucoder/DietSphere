@@ -93,6 +93,42 @@ function Dashboard({ user, onLogout }) {
         </Link>
       </div>
 
+      {/* BMI Badge */}
+      {user?.bmi && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+          className="mb-6 bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between"
+        >
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold
+              ${user.bmiCategory === 'Normal weight' ? 'bg-emerald-50 text-emerald-600'
+              : user.bmiCategory === 'Underweight' ? 'bg-amber-50 text-amber-600'
+              : user.bmiCategory === 'Overweight' ? 'bg-orange-50 text-orange-600'
+              : 'bg-red-50 text-red-600'}`}>
+              {Number(user.bmi).toFixed(1)}
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Your BMI</p>
+              <p className={`text-sm font-bold mt-0.5
+                ${user.bmiCategory === 'Normal weight' ? 'text-emerald-600'
+                : user.bmiCategory === 'Underweight' ? 'text-amber-600'
+                : user.bmiCategory === 'Overweight' ? 'text-orange-600'
+                : 'text-red-600'}`}>
+                {user.bmiCategory}
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-[11px] text-slate-400">Nutrient targets are adjusted for your BMI</p>
+            <Link to="/profile" className="text-xs font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+              Update profile →
+            </Link>
+          </div>
+        </motion.div>
+      )}
+
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         {statCards.map((stat, i) => {

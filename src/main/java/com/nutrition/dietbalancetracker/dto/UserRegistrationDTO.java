@@ -28,4 +28,14 @@ public class UserRegistrationDTO {
     @Min(value = 1, message = "Age must be at least 1")
     @Max(value = 120, message = "Age must be less than 120")
     private Integer age;
+
+    @NotNull(message = "Weight is required")
+    @Min(value = 10, message = "Weight must be at least 10 kg")
+    @Max(value = 300, message = "Weight must be less than 300 kg")
+    private Double weightKg;
+
+    @NotNull(message = "Height is required")
+    @Min(value = 50, message = "Height must be at least 50 cm")
+    @Max(value = 280, message = "Height must be less than 280 cm")
+    private Double heightCm;
 }
