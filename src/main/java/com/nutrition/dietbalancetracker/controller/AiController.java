@@ -1,17 +1,26 @@
 package com.nutrition.dietbalancetracker.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.nutrition.dietbalancetracker.dto.AiChatRequestDTO;
 import com.nutrition.dietbalancetracker.dto.AiChatResponseDTO;
 import com.nutrition.dietbalancetracker.model.ChatMessage;
 import com.nutrition.dietbalancetracker.repository.ChatMessageRepository;
 import com.nutrition.dietbalancetracker.service.AiService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 /**
  * AI CONTROLLER
