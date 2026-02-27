@@ -19,6 +19,13 @@ import java.util.Map;
 public class FoodController {
     
     private final FoodItemService foodItemService;
+
+    // GET /api/foods — list all foods (for FoodLogging page)
+    @GetMapping
+    public ResponseEntity<List<FoodItemResponseDTO>> getAllFoods() {
+        List<FoodItemResponseDTO> foods = foodItemService.searchFoods(null, null);
+        return ResponseEntity.ok(foods);
+    }
     
     // GET /api/foods/search?query=apple&category=GRAIN
     @GetMapping("/search")

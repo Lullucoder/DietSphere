@@ -39,7 +39,7 @@ public class DietaryEntryController {
         }
     }
     
-    // GET /api/entries?userId=1
+    // GET /api/dietary-entries?userId=1
     @GetMapping
     public ResponseEntity<List<DietaryEntryResponseDTO>> getMealHistory(@RequestParam Long userId) {
         List<DietaryEntry> entries = dietaryEntryService.getMealHistory(userId);
@@ -48,8 +48,18 @@ public class DietaryEntryController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
+
+    // GET /api/dietary-entries/user/{userId} — path param variant for frontend
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<DietaryEntryResponseDTO>> getMealHistoryByPath(@PathVariable Long userId) {
+        List<DietaryEntry> entries = dietaryEntryService.getMealHistory(userId);
+        List<DietaryEntryResponseDTO> dtos = entries.stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
     
-    // GET /api/entries/today?userId=1
+    // GET /api/dietary-entries/today?userId=1
     @GetMapping("/today")
     public ResponseEntity<List<DietaryEntryResponseDTO>> getTodaysMeals(@RequestParam Long userId) {
         List<DietaryEntry> entries = dietaryEntryService.getTodaysMeals(userId);
