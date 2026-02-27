@@ -13,7 +13,7 @@ export default function Dashboard({ user }) {
       try {
         const [e, a] = await Promise.all([
           api.get(`/dietary-entries/user/${user.id}`),
-          api.get(`/nutrient-analysis?userId=${user.id}`).catch(() => ({ data: null }))
+          api.get(`/analysis/today?userId=${user.id}`).catch(() => ({ data: null }))
         ]);
         setEntries(e.data.slice(0, 5));
         setAnalysis(a.data);

@@ -7,7 +7,7 @@ export default function Nutrition({ user }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/nutrient-analysis?userId=${user.id}`)
+    api.get(`/analysis/today?userId=${user.id}`)
       .then((r) => setAnalysis(r.data))
       .catch(() => {})
       .finally(() => setLoading(false));
