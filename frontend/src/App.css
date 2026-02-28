@@ -7,10 +7,14 @@
 .loading-spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid #ede4d5;
-  border-top-color: #5fad7e;
+  border: 3px solid #e2e8f0;
+  border-top-color: #14b8a6;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+.dark .loading-spinner {
+  border-color: #1e293b;
+  border-top-color: #2dd4bf;
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -22,8 +26,11 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #8D6E63;
+  background: #94a3b8;
   animation: typingBounce 1.4s ease-in-out infinite;
+}
+.dark .typing-dot {
+  background: #94a3b8;
 }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
@@ -42,11 +49,11 @@
 
 /* ── AI message formatted content ────────────── */
 .ai-content p { margin-bottom: 0.5rem; }
-.ai-content strong, .ai-content b { font-weight: 600; color: #2E2E2E; }
+.ai-content strong, .ai-content b { font-weight: 600; color: #0f172a; }
 .ai-content ul, .ai-content ol { padding-left: 1.25rem; margin: 0.5rem 0; }
 .ai-content li { margin-bottom: 0.25rem; }
 .ai-content code {
-  background: #F6F1E9;
+  background: #e2e8f0;
   padding: 0.15em 0.4em;
   border-radius: 4px;
   font-size: 0.85em;
@@ -54,8 +61,13 @@
 .ai-content h1, .ai-content h2, .ai-content h3 {
   font-weight: 700;
   margin: 0.75rem 0 0.35rem;
-  color: #2E2E2E;
+  color: #0f172a;
 }
 .ai-content h1 { font-size: 1.1em; }
 .ai-content h2 { font-size: 1.05em; }
 .ai-content h3 { font-size: 1em; }
+
+/* Dark mode AI content */
+.dark .ai-content strong, .dark .ai-content b { color: #f1f5f9; }
+.dark .ai-content code { background: #334155; color: #e2e8f0; }
+.dark .ai-content h1, .dark .ai-content h2, .dark .ai-content h3 { color: #f1f5f9; }

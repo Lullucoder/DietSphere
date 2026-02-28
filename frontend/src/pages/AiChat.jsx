@@ -49,14 +49,14 @@ export default function AiChat({ user, onLogout }) {
 
   /* Check Ollama status */
   useEffect(() => {
-    api.get('/api/ai/status')
+    api.get('/ai/status')
       .then((res) => setOllamaOnline(res.data?.ollamaAvailable ?? false))
       .catch(() => setOllamaOnline(false));
   }, []);
 
   /* Load chat history */
   useEffect(() => {
-    api.get(`/api/ai/history?userId=${user.id}`)
+    api.get(`/ai/history?userId=${user.id}`)
       .then((res) => {
         if (Array.isArray(res.data) && res.data.length) {
           setMessages(res.data.map((m) => ({ id: m.id, role: m.role, content: m.content })));
@@ -82,7 +82,7 @@ export default function AiChat({ user, onLogout }) {
     try {
       const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
 
-      const res = await api.post('/api/ai/chat', {
+      const res = await api.post('/ai/chat', {
         message: msg,
         userId: user.id,
         history,
@@ -105,13 +105,13 @@ export default function AiChat({ user, onLogout }) {
 
   const deleteMessage = async (id, idx) => {
     if (id) {
-      try { await api.delete(`/api/ai/history/${id}?userId=${user.id}`); } catch { /* skip */ }
+      try { await api.delete(`/ai/history/${id}?userId=${user.id}`); } catch { /* skip */ }
     }
     setMessages((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const clearChat = async () => {
-    try { await api.delete(`/api/ai/history?userId=${user.id}`); } catch { /* skip */ }
+    try { await api.delete(`/ai/history?userId=${user.id}`); } catch { /* skip */ }
     setMessages([]);
     toast.success('Chat cleared');
   };
@@ -126,10 +126,10 @@ export default function AiChat({ user, onLogout }) {
               <span className="text-white text-lg">🤖</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-charcoal">NutriBot AI</h1>
+              <h1 className="text-lg font-bold text-charcoal dark:text-dark-text">NutriBot AI</h1>
               <div className="flex items-center gap-1.5">
                 <div className={`w-2 h-2 rounded-full ${ollamaOnline ? 'bg-sage-500' : ollamaOnline === false ? 'bg-red-400' : 'bg-amber-400'} animate-pulse`} />
-                <span className="text-[11px] text-brown-400">
+                <span className="text-[11px] text-brown-400 dark:text-dark-muted">
                   {ollamaOnline ? 'Online' : ollamaOnline === false ? 'Offline' : 'Checking…'}
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function AiChat({ user, onLogout }) {
 
         {/* Offline banner */}
         {ollamaOnline === false && (
-          <div className="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-2 text-amber-700 text-xs flex-shrink-0">
+          <div className="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs flex-shrink-0">
             <FiWifiOff className="w-4 h-4" />
             <span>Ollama is offline. Run <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono text-[11px]">ollama serve</code> then pull <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono text-[11px]">llama3.2:3b</code></span>
           </div>
@@ -154,9 +154,9 @@ export default function AiChat({ user, onLogout }) {
         <div className="flex-1 overflow-y-auto space-y-3 pr-1 mb-4">
           {messages.length === 0 && !sending && (
             <div className="flex flex-col items-center justify-center h-full py-12">
-              <div className="w-16 h-16 rounded-2xl bg-sage-50 flex items-center justify-center mb-4 text-3xl">🧠</div>
-              <h3 className="text-base font-semibold text-charcoal mb-1">Ask me anything about nutrition</h3>
-              <p className="text-xs text-brown-400 mb-6 text-center max-w-sm">
+              <div className="w-16 h-16 rounded-2xl bg-sage-50 dark:bg-sage-500/10 flex items-center justify-center mb-4 text-3xl">🧠</div>
+              <h3 className="text-base font-semibold text-charcoal dark:text-dark-text mb-1">Ask me anything about nutrition</h3>
+              <p className="text-xs text-brown-400 dark:text-dark-muted mb-6 text-center max-w-sm">
                 I can help with meal planning, nutrient info, Indian food suggestions, and dietary advice.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
@@ -164,7 +164,7 @@ export default function AiChat({ user, onLogout }) {
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
-                    className="text-left px-4 py-3 rounded-xl text-xs font-medium text-brown-600 bg-white border border-cream-300 hover:border-sage-400 hover:shadow-soft transition-all"
+                    className="text-left px-4 py-3 rounded-xl text-xs font-medium text-brown-600 dark:text-dark-text bg-white dark:bg-dark-card border border-cream-300 dark:border-dark-border hover:border-sage-400 hover:shadow-soft transition-all"
                   >
                     {prompt}
                   </button>
@@ -183,7 +183,7 @@ export default function AiChat({ user, onLogout }) {
                   relative max-w-[80%] px-4 py-3 text-sm leading-relaxed rounded-2xl
                   ${msg.role === 'user'
                     ? 'bg-sage-500 text-white rounded-br-md'
-                    : 'bg-white border border-cream-200 text-charcoal rounded-bl-md'}
+                    : 'bg-white dark:bg-dark-card border border-cream-200 dark:border-dark-border text-charcoal dark:text-dark-text rounded-bl-md'}
                 `}
               >
                 {msg.role === 'assistant' ? (
@@ -210,7 +210,7 @@ export default function AiChat({ user, onLogout }) {
           {/* Typing indicator */}
           {sending && (
             <div className="flex justify-start">
-              <div className="bg-white border border-cream-200 rounded-2xl rounded-bl-md px-5 py-3.5 flex items-center gap-1.5">
+              <div className="bg-white dark:bg-dark-card border border-cream-200 dark:border-dark-border rounded-2xl rounded-bl-md px-5 py-3.5 flex items-center gap-1.5">
                 <span className="typing-dot" />
                 <span className="typing-dot" />
                 <span className="typing-dot" />

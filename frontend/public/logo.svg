@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Sphere body -->
+  <circle cx="60" cy="60" r="54" fill="#10b981"/>
+  <circle cx="60" cy="60" r="54" fill="url(#sphereGrad)" opacity="0.6"/>
+  <!-- Highlight reflection -->
+  <ellipse cx="44" cy="38" rx="18" ry="14" fill="white" opacity="0.18"/>
+  <!-- Leaf -->
+  <path d="M55 28C55 28 38 44 42 62C46 80 60 76 60 76C60 76 76 72 72 54C68 36 55 28 55 28Z"
+        fill="#059669" opacity="0.7"/>
+  <path d="M56 32C56 52 50 68 58 74" stroke="#d1fae5" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Fork -->
+  <g transform="translate(62,36) rotate(15)">
+    <rect x="3" y="0" width="2.5" height="30" rx="1.2" fill="white" opacity="0.9"/>
+    <rect x="-2" y="0" width="2" height="14" rx="1" fill="white" opacity="0.9"/>
+    <rect x="3" y="0" width="2" height="14" rx="1" fill="white" opacity="0.9"/>
+    <rect x="8" y="0" width="2" height="14" rx="1" fill="white" opacity="0.9"/>
+  </g>
+  <!-- Subtle ring -->
+  <circle cx="60" cy="60" r="54" stroke="#047857" stroke-width="2" opacity="0.3"/>
+  <defs>
+    <radialGradient id="sphereGrad" cx="0.35" cy="0.3" r="0.65">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#064e3b" stop-opacity="0.3"/>
+    </radialGradient>
+  </defs>
+</svg>
