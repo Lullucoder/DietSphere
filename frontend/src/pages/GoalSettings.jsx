@@ -136,8 +136,8 @@ export default function GoalSettings({ user, onLogout }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-charcoal">Nutrition Goals</h1>
-          <p className="text-sm text-brown-400 mt-1">Set daily targets for your macros and calories</p>
+          <h1 className="text-2xl font-bold text-charcoal dark:text-dark-text">Nutrition Goals</h1>
+          <p className="text-sm text-brown-400 dark:text-dark-muted mt-1">Set daily targets for your macros and calories</p>
         </div>
         {isDirty && (
           <button onClick={handleSave} disabled={saving} className="btn-primary self-start">
@@ -153,7 +153,7 @@ export default function GoalSettings({ user, onLogout }) {
       {/* Loading */}
       {loading && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
-          {[1,2,3,4].map(i => <div key={i} className="h-28 rounded-2xl bg-cream-200" />)}
+          {[1,2,3,4].map(i => <div key={i} className="h-28 rounded-2xl bg-cream-200 dark:bg-dark-card" />)}
         </div>
       )}
 
@@ -166,16 +166,16 @@ export default function GoalSettings({ user, onLogout }) {
                   <FiTarget className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-brown-400">Based on your BMI {bmi}</p>
-                  <p className="text-sm font-semibold text-charcoal">{bmiSuggestion.label}</p>
+                  <p className="text-xs text-brown-400 dark:text-dark-muted">Based on your BMI {bmi}</p>
+                  <p className="text-sm font-semibold text-charcoal dark:text-dark-text">{bmiSuggestion.label}</p>
                 </div>
               </div>
-              <p className="text-xs text-brown-400 mb-4">{bmiSuggestion.note}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px] text-brown-400 mb-4">
+              <p className="text-xs text-brown-400 dark:text-dark-muted mb-4">{bmiSuggestion.note}</p>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px] text-brown-400 dark:text-dark-muted mb-4">
                 {GOAL_FIELDS.map((f) => (
-                  <div key={f.key} className="px-2 py-2 rounded-lg bg-cream-100">
-                    <p className="text-brown-300">{f.label}</p>
-                    <p className="font-semibold text-charcoal">{bmiSuggestion.goals[f.key]}{f.unit}</p>
+                  <div key={f.key} className="px-2 py-2 rounded-lg bg-cream-100 dark:bg-dark-border/50">
+                    <p className="text-brown-300 dark:text-dark-muted">{f.label}</p>
+                    <p className="font-semibold text-charcoal dark:text-dark-text">{bmiSuggestion.goals[f.key]}{f.unit}</p>
                   </div>
                 ))}
               </div>
@@ -187,7 +187,7 @@ export default function GoalSettings({ user, onLogout }) {
 
           {/* Presets */}
           <div className="mb-8">
-            <h3 className="text-xs font-semibold text-brown-400 uppercase tracking-wider mb-3">Quick Presets</h3>
+            <h3 className="text-xs font-semibold text-brown-400 dark:text-dark-muted uppercase tracking-wider mb-3">Quick Presets</h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {PRESETS.map((preset) => (
                 <button
@@ -198,8 +198,8 @@ export default function GoalSettings({ user, onLogout }) {
                   <div className={`w-10 h-10 rounded-xl ${preset.bg} flex items-center justify-center mb-3`}>
                     <span className="text-lg">{preset.emoji}</span>
                   </div>
-                  <p className="text-sm font-semibold text-charcoal">{preset.name}</p>
-                  <p className="text-xs text-brown-400 mt-0.5">{preset.desc}</p>
+                  <p className="text-sm font-semibold text-charcoal dark:text-dark-text">{preset.name}</p>
+                  <p className="text-xs text-brown-400 dark:text-dark-muted mt-0.5">{preset.desc}</p>
                 </button>
               ))}
             </div>
@@ -208,7 +208,7 @@ export default function GoalSettings({ user, onLogout }) {
           {/* Goal Sliders */}
           <div className="card p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-sm font-semibold text-charcoal">Custom Goals</h3>
+              <h3 className="text-sm font-semibold text-charcoal dark:text-dark-text">Custom Goals</h3>
               {isDirty && (
                 <button onClick={() => setGoals(original)} className="btn-ghost text-xs text-brown-400">
                   <FiRefreshCw className="w-3.5 h-3.5" /> Reset
@@ -224,7 +224,7 @@ export default function GoalSettings({ user, onLogout }) {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className={`w-2.5 h-2.5 rounded-full ${field.color}`} />
-                        <span className="text-sm font-medium text-charcoal">{field.label}</span>
+                        <span className="text-sm font-medium text-charcoal dark:text-dark-text">{field.label}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <input
@@ -234,9 +234,9 @@ export default function GoalSettings({ user, onLogout }) {
                             const v = parseInt(e.target.value) || field.min;
                             setGoals({ ...goals, [field.key]: Math.min(field.max, Math.max(field.min, v)) });
                           }}
-                          className="w-20 text-right text-sm font-bold text-charcoal bg-transparent border-none focus:ring-0 p-0"
+                          className="w-20 text-right text-sm font-bold text-charcoal dark:text-dark-text bg-transparent border-none focus:ring-0 p-0"
                         />
-                        <span className="text-xs text-brown-400">{field.unit}</span>
+                        <span className="text-xs text-brown-400 dark:text-dark-muted">{field.unit}</span>
                       </div>
                     </div>
                     <div className="relative">
@@ -256,7 +256,7 @@ export default function GoalSettings({ user, onLogout }) {
                         />
                       </div>
                     </div>
-                    <div className="flex justify-between text-[10px] text-brown-300 mt-1">
+                    <div className="flex justify-between text-[10px] text-brown-300 dark:text-dark-muted mt-1">
                       <span>{field.min} {field.unit}</span>
                       <span>{field.max} {field.unit}</span>
                     </div>
@@ -266,7 +266,7 @@ export default function GoalSettings({ user, onLogout }) {
             </div>
 
             {isDirty && (
-              <div className="mt-6 pt-6 border-t border-cream-200">
+              <div className="mt-6 pt-6 border-t border-cream-200 dark:border-dark-border">
                 <button onClick={handleSave} disabled={saving} className="btn-primary w-full py-3 text-sm">
                   {saving ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

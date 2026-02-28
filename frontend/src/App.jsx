@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
@@ -12,6 +13,28 @@ import AiChat from './pages/AiChat';
 import Charts from './pages/Charts';
 import GoalSettings from './pages/GoalSettings';
 import './App.css';
+
+function ThemedToaster() {
+  const { dark } = useTheme();
+  return (
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        className: 'text-sm font-medium',
+        style: {
+          background: dark ? '#1e293b' : '#fff',
+          border: `1px solid ${dark ? '#334155' : '#f2f1ef'}`,
+          borderRadius: '14px',
+          color: dark ? '#f1f5f9' : '#1e293b',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+        },
+        success: { iconTheme: { primary: '#10b981', secondary: dark ? '#1e293b' : '#fff' } },
+        error:   { iconTheme: { primary: '#ef4444', secondary: dark ? '#1e293b' : '#fff' } },
+        duration: 3000,
+      }}
+    />
+  );
+}
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -42,37 +65,24 @@ function App() {
   };
 
   return (
-    <Router>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          className: 'text-sm font-medium',
-          style: {
-            background: '#fff',
-            border: '1px solid #ede4d5',
-            borderRadius: '14px',
-            color: '#2E2E2E',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          },
-          success: { iconTheme: { primary: '#5fad7e', secondary: '#fff' } },
-          error:   { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
-          duration: 3000,
-        }}
-      />
-      <Routes>
-        <Route path="/login"    element={user ? <Navigate to="/dashboard" /> : <LoginPage onLogin={handleLogin} />} />
-        <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <RegisterPage onRegister={handleLogin} />} />
-        <Route path="/dashboard"  element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/log-food"   element={user ? <FoodLogging user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/history"    element={user ? <MealHistory user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/nutrition"  element={user ? <NutritionAnalysis user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/profile"    element={user ? <UserProfile user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} />
-        <Route path="/ai-chat"    element={user ? <AiChat user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/charts"     element={user ? <Charts user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/goals"      element={user ? <GoalSettings user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <ThemedToaster />
+        <Routes>
+          <Route path="/login"    element={user ? <Navigate to="/dashboard" /> : <LoginPage onLogin={handleLogin} />} />
+          <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <RegisterPage onRegister={handleLogin} />} />
+          <Route path="/dashboard"  element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/log-food"   element={user ? <FoodLogging user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/history"    element={user ? <MealHistory user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/nutrition"  element={user ? <NutritionAnalysis user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/profile"    element={user ? <UserProfile user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} />
+          <Route path="/ai-chat"    element={user ? <AiChat user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/charts"     element={user ? <Charts user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/goals"      element={user ? <GoalSettings user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
