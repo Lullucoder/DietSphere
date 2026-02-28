@@ -196,10 +196,10 @@ export default function FoodLogging({ user, onLogout }) {
                   onClick={() => toggle(food.id)}
                   className="w-full text-left"
                 >
-                  {/* Check badge */}
-                  <div className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center transition-colors
-                    ${checked ? 'bg-sage-500' : 'border-2 border-cream-300 dark:border-dark-border'}`}>
-                    {checked && <FiCheck className="w-3 h-3 text-white" />}
+                  {/* Check badge — shows quantity when > 1 */}
+                  <div className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all
+                    ${checked ? 'bg-sage-500 text-white text-xs font-bold shadow-sm' : 'border-2 border-cream-300 dark:border-dark-border'}`}>
+                    {checked && (qty > 1 ? qty : <FiCheck className="w-3 h-3" />)}
                   </div>
 
                   <div className="text-2xl mb-2">{getFoodEmoji(food.name)}</div>
@@ -214,21 +214,23 @@ export default function FoodLogging({ user, onLogout }) {
                 {/* Quantity controls — visible when selected */}
                 {checked && (
                   <div className="mt-3 pt-3 border-t border-sage-200 dark:border-sage-500/30 flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-sage-700 dark:text-sage-400">Qty</span>
-                    <div className="flex items-center gap-1">
+                    <div className="text-[11px] text-sage-700 dark:text-sage-400">
+                      <span className="font-bold">{Math.round(food.caloriesPer100g * portionSize * qty / 100)}</span> kcal
+                    </div>
+                    <div className="flex items-center gap-1.5">
                       <button
                         onClick={(e) => { e.stopPropagation(); adjustQty(food.id, -1); }}
                         disabled={qty <= 1}
-                        className="w-7 h-7 rounded-lg bg-sage-100 dark:bg-sage-500/20 flex items-center justify-center text-sage-600 dark:text-sage-400 hover:bg-sage-200 dark:hover:bg-sage-500/30 disabled:opacity-30 transition-colors"
+                        className="w-8 h-8 rounded-lg bg-sage-100 dark:bg-sage-500/20 flex items-center justify-center text-sage-600 dark:text-sage-400 hover:bg-sage-200 dark:hover:bg-sage-500/30 disabled:opacity-30 transition-all active:scale-90"
                       >
-                        <FiMinus className="w-3 h-3" />
+                        <FiMinus className="w-3.5 h-3.5" />
                       </button>
                       <span className="w-8 text-center text-sm font-bold text-sage-700 dark:text-sage-300">{qty}</span>
                       <button
                         onClick={(e) => { e.stopPropagation(); adjustQty(food.id, 1); }}
-                        className="w-7 h-7 rounded-lg bg-sage-100 dark:bg-sage-500/20 flex items-center justify-center text-sage-600 dark:text-sage-400 hover:bg-sage-200 dark:hover:bg-sage-500/30 transition-colors"
+                        className="w-8 h-8 rounded-lg bg-sage-100 dark:bg-sage-500/20 flex items-center justify-center text-sage-600 dark:text-sage-400 hover:bg-sage-200 dark:hover:bg-sage-500/30 transition-all active:scale-90"
                       >
-                        <FiPlus className="w-3 h-3" />
+                        <FiPlus className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -241,7 +243,7 @@ export default function FoodLogging({ user, onLogout }) {
 
       {/* Floating bottom bar */}
       {selectedCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-dark-card border-t border-cream-200 dark:border-dark-border shadow-soft-lg px-4 py-3 sm:left-64">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-dark-card border-t border-cream-200 dark:border-dark-border shadow-soft-lg px-4 py-3 lg:left-64">
           <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <span className="flex-shrink-0 w-8 h-8 rounded-full bg-sage-500 text-white text-sm font-bold flex items-center justify-center">

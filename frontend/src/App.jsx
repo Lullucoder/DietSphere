@@ -22,14 +22,14 @@ function ThemedToaster() {
       toastOptions={{
         className: 'text-sm font-medium',
         style: {
-          background: dark ? '#1e293b' : '#fff',
-          border: `1px solid ${dark ? '#334155' : '#f2f1ef'}`,
+          background: dark ? '#0f172a' : '#fff',
+          border: `1px solid ${dark ? '#1e293b' : '#e2e8f0'}`,
           borderRadius: '14px',
-          color: dark ? '#f1f5f9' : '#1e293b',
+          color: dark ? '#f1f5f9' : '#0f172a',
           boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
         },
-        success: { iconTheme: { primary: '#10b981', secondary: dark ? '#1e293b' : '#fff' } },
-        error:   { iconTheme: { primary: '#ef4444', secondary: dark ? '#1e293b' : '#fff' } },
+        success: { iconTheme: { primary: '#14b8a6', secondary: dark ? '#0f172a' : '#fff' } },
+        error:   { iconTheme: { primary: '#ef4444', secondary: dark ? '#0f172a' : '#fff' } },
         duration: 3000,
       }}
     />

@@ -9,7 +9,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { FiBarChart2 } from 'react-icons/fi';
 
-const COLORS = ['#10b981', '#78716c', '#6ee7b7', '#a8a29e', '#059669', '#d6d3d1', '#34d399', '#e7e5e4'];
+const COLORS = ['#14b8a6', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#f97316', '#10b981', '#6366f1'];
 const PERIODS = [
   { value: 7,  label: '7 Days' },
   { value: 14, label: '14 Days' },
@@ -110,15 +110,15 @@ export default function Charts({ user, onLogout }) {
               <AreaChart data={dailyData}>
                 <defs>
                   <linearGradient id="calGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#14b8a6" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#14b8a6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#334155' : '#e7e5e4'} />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
-                <YAxis tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
+                <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1e293b' : '#e2e8f0'} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
+                <YAxis tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="calories" name="Calories" stroke="#10b981" strokeWidth={2.5} fill="url(#calGrad)" />
+                <Area type="monotone" dataKey="calories" name="Calories" stroke="#14b8a6" strokeWidth={2.5} fill="url(#calGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -127,14 +127,14 @@ export default function Charts({ user, onLogout }) {
           <ChartCard title="Macro Distribution (Daily)">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dailyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#334155' : '#e7e5e4'} />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
-                <YAxis tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
+                <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1e293b' : '#e2e8f0'} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
+                <YAxis tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="protein" name="Protein" stackId="a" fill="#10b981" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="carbs"   name="Carbs"   stackId="a" fill="#78716c" />
-                <Bar dataKey="fat"     name="Fat"     stackId="a" fill="#6ee7b7" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="protein" name="Protein" stackId="a" fill="#14b8a6" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="carbs"   name="Carbs"   stackId="a" fill="#8b5cf6" />
+                <Bar dataKey="fat"     name="Fat"     stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -153,7 +153,7 @@ export default function Charts({ user, onLogout }) {
                   labelLine={false}
                 >
                   {macroPieData.map((_, i) => (
-                    <Cell key={i} fill={['#10b981', '#78716c', '#6ee7b7'][i]} />
+                    <Cell key={i} fill={['#14b8a6', '#8b5cf6', '#f59e0b'][i]} />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
@@ -188,10 +188,10 @@ export default function Charts({ user, onLogout }) {
             <ChartCard title="Nutrient Balance">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke={dark ? '#334155' : '#e7e5e4'} />
-                  <PolarAngleAxis dataKey="nutrient" tick={{ fontSize: 10, fill: dark ? '#94a3b8' : '#a8a29e' }} />
-                  <PolarRadiusAxis tick={{ fontSize: 9 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
-                  <Radar name="Intake" dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.2} strokeWidth={2} />
+                  <PolarGrid stroke={dark ? '#1e293b' : '#e2e8f0'} />
+                  <PolarAngleAxis dataKey="nutrient" tick={{ fontSize: 10, fill: dark ? '#94a3b8' : '#94a3b8' }} />
+                  <PolarRadiusAxis tick={{ fontSize: 9 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
+                  <Radar name="Intake" dataKey="value" stroke="#14b8a6" fill="#14b8a6" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -202,11 +202,11 @@ export default function Charts({ user, onLogout }) {
             <ChartCard title="Most Logged Foods">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topFoodsData.slice(0, 8)} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#334155' : '#e7e5e4'} />
-                  <XAxis type="number" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#a8a29e'} width={100} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1e293b' : '#e2e8f0'} />
+                  <XAxis type="number" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} width={100} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Times Logged" fill="#10b981" radius={[0, 6, 6, 0]}>
+                  <Bar dataKey="count" name="Times Logged" fill="#14b8a6" radius={[0, 6, 6, 0]}>
                     {topFoodsData.slice(0, 8).map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}

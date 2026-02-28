@@ -8,11 +8,11 @@
   html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
   body {
     @apply font-sans antialiased text-charcoal;
-    background: #fafaf9;
+    background: #f8fafc;
   }
   .dark body,
   html.dark body {
-    background: #0f172a;
+    background: #020617;
     color: #f1f5f9;
   }
   ::selection { @apply bg-sage-300/40 text-sage-900; }
@@ -88,4 +88,48 @@
   .badge {
     @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
   }
+}
+
+/* ── Range Slider ─────────────────────────────── */
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--range-color) var(--range-progress, 0%), #e2e8f0 var(--range-progress, 0%));
+  transition: background 0.15s;
+}
+.dark .range-slider {
+  background: linear-gradient(to right, var(--range-color) var(--range-progress, 0%), #1e293b var(--range-progress, 0%));
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--range-color);
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.dark .range-slider::-webkit-slider-thumb {
+  border-color: #0f172a;
+}
+.range-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--range-color);
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+.dark .range-slider::-moz-range-thumb {
+  border-color: #0f172a;
 }

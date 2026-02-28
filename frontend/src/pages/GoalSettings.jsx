@@ -9,7 +9,7 @@ const PRESETS = [
     name: 'Weight Loss',
     emoji: '🔥',
     desc: 'Lower calories, moderate protein',
-    bg: 'bg-brown-400',
+    bg: 'bg-amber-500',
     goals: { calorieGoal: 1500, proteinGoal: 60, carbsGoal: 180, fatGoal: 45, fiberGoal: 30 },
   },
   {
@@ -23,24 +23,24 @@ const PRESETS = [
     name: 'Muscle Building',
     emoji: '💪',
     desc: 'High protein, higher calories',
-    bg: 'bg-brown-500',
+    bg: 'bg-violet-500',
     goals: { calorieGoal: 2500, proteinGoal: 100, carbsGoal: 300, fatGoal: 80, fiberGoal: 30 },
   },
   {
     name: 'Balanced Indian',
     emoji: '🍛',
     desc: 'Traditional balanced Indian diet',
-    bg: 'bg-sage-600',
+    bg: 'bg-orange-500',
     goals: { calorieGoal: 2000, proteinGoal: 55, carbsGoal: 270, fatGoal: 60, fiberGoal: 32 },
   },
 ];
 
 const GOAL_FIELDS = [
-  { key: 'calorieGoal', label: 'Calories',  unit: 'kcal', min: 800, max: 5000, step: 50,  color: 'bg-brown-400'  },
-  { key: 'proteinGoal', label: 'Protein',   unit: 'g',    min: 10,  max: 200,  step: 5,   color: 'bg-sage-500'   },
-  { key: 'carbsGoal',   label: 'Carbs',     unit: 'g',    min: 50,  max: 500,  step: 10,  color: 'bg-brown-500'  },
-  { key: 'fatGoal',     label: 'Fat',       unit: 'g',    min: 10,  max: 200,  step: 5,   color: 'bg-sage-600'   },
-  { key: 'fiberGoal',   label: 'Fiber',     unit: 'g',    min: 5,   max: 80,   step: 1,   color: 'bg-sage-400'   },
+  { key: 'calorieGoal', label: 'Calories',  unit: 'kcal', min: 800, max: 5000, step: 50,  hex: '#f59e0b', dot: 'bg-amber-500'  },
+  { key: 'proteinGoal', label: 'Protein',   unit: 'g',    min: 10,  max: 200,  step: 5,   hex: '#14b8a6', dot: 'bg-sage-500'   },
+  { key: 'carbsGoal',   label: 'Carbs',     unit: 'g',    min: 50,  max: 500,  step: 10,  hex: '#8b5cf6', dot: 'bg-violet-500' },
+  { key: 'fatGoal',     label: 'Fat',       unit: 'g',    min: 10,  max: 200,  step: 5,   hex: '#f97316', dot: 'bg-orange-500' },
+  { key: 'fiberGoal',   label: 'Fiber',     unit: 'g',    min: 5,   max: 80,   step: 1,   hex: '#06b6d4', dot: 'bg-cyan-500'   },
 ];
 
 export default function GoalSettings({ user, onLogout }) {
@@ -71,7 +71,7 @@ export default function GoalSettings({ user, onLogout }) {
         label: 'Underweight focus',
         note: 'Boost calories and protein to support healthy weight gain.',
         goals: { calorieGoal: 2400, proteinGoal: 90, carbsGoal: 320, fatGoal: 80, fiberGoal: 28 },
-        bg: 'bg-brown-400',
+        bg: 'bg-amber-500',
       };
     }
     if (bmi < 25) {
@@ -87,14 +87,14 @@ export default function GoalSettings({ user, onLogout }) {
         label: 'Fat-loss focus',
         note: 'Slight calorie reduction with higher protein and fiber.',
         goals: { calorieGoal: 1700, proteinGoal: 95, carbsGoal: 190, fatGoal: 55, fiberGoal: 32 },
-        bg: 'bg-brown-500',
+        bg: 'bg-orange-500',
       };
     }
     return {
       label: 'Metabolic reset',
       note: 'Lower carbs, higher protein and fiber for satiety.',
       goals: { calorieGoal: 1500, proteinGoal: 110, carbsGoal: 160, fatGoal: 50, fiberGoal: 35 },
-      bg: 'bg-sage-600',
+      bg: 'bg-rose-500',
     };
   }, [bmi]);
 
@@ -223,7 +223,7 @@ export default function GoalSettings({ user, onLogout }) {
                   <div key={field.key}>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className={`w-2.5 h-2.5 rounded-full ${field.color}`} />
+                        <div className={`w-2.5 h-2.5 rounded-full ${field.dot}`} />
                         <span className="text-sm font-medium text-charcoal dark:text-dark-text">{field.label}</span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -239,23 +239,16 @@ export default function GoalSettings({ user, onLogout }) {
                         <span className="text-xs text-brown-400 dark:text-dark-muted">{field.unit}</span>
                       </div>
                     </div>
-                    <div className="relative">
-                      <input
-                        type="range"
-                        min={field.min}
-                        max={field.max}
-                        step={field.step}
-                        value={val}
-                        onChange={(e) => setGoals({ ...goals, [field.key]: parseInt(e.target.value) })}
-                        className="w-full"
-                      />
-                      <div className="absolute top-0 left-0 h-2 rounded-full pointer-events-none overflow-hidden" style={{ width: '100%' }}>
-                        <div
-                          className={`h-full rounded-full ${field.color} transition-all duration-200`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
+                    <input
+                      type="range"
+                      min={field.min}
+                      max={field.max}
+                      step={field.step}
+                      value={val}
+                      onChange={(e) => setGoals({ ...goals, [field.key]: parseInt(e.target.value) })}
+                      className="range-slider w-full"
+                      style={{ '--range-progress': `${pct}%`, '--range-color': field.hex }}
+                    />
                     <div className="flex justify-between text-[10px] text-brown-300 dark:text-dark-muted mt-1">
                       <span>{field.min} {field.unit}</span>
                       <span>{field.max} {field.unit}</span>

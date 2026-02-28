@@ -134,9 +134,9 @@ export default function NutritionAnalysis({ user, onLogout }) {
                   {data.macronutrients.map((n) => {
                     const colors = {
                       PROTEIN: 'bg-sage-500',
-                      CARBOHYDRATES: 'bg-brown-400',
-                      FAT: 'bg-sage-600',
-                      FIBER: 'bg-brown-300',
+                      CARBOHYDRATES: 'bg-violet-500',
+                      FAT: 'bg-amber-500',
+                      FIBER: 'bg-cyan-500',
                     };
                     return nutrientBar(
                       n.name,

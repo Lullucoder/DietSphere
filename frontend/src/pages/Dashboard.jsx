@@ -76,9 +76,9 @@ export default function Dashboard({ user, onLogout }) {
 
   const quickActions = [
     { to: '/nutrition', icon: FiActivity,      label: 'Analysis',  bg: 'bg-sage-500' },
-    { to: '/ai-chat',   icon: FiMessageSquare, label: 'NutriBot',  bg: 'bg-brown-500' },
-    { to: '/charts',    icon: FiBarChart2,     label: 'Charts',    bg: 'bg-sage-600' },
-    { to: '/goals',     icon: FiTarget,        label: 'Goals',     bg: 'bg-brown-400' },
+    { to: '/ai-chat',   icon: FiMessageSquare, label: 'NutriBot',  bg: 'bg-violet-500' },
+    { to: '/charts',    icon: FiBarChart2,     label: 'Charts',    bg: 'bg-cyan-500' },
+    { to: '/goals',     icon: FiTarget,        label: 'Goals',     bg: 'bg-amber-500' },
   ];
 
   if (loading) {
@@ -176,8 +176,8 @@ export default function Dashboard({ user, onLogout }) {
             <h3 className="text-sm font-semibold text-charcoal dark:text-dark-text mb-4">Macro Breakdown</h3>
             <div className="space-y-4">
               <MacroBar label="Protein" value={totals.protein} goal={protGoal} color="bg-sage-500" />
-              <MacroBar label="Carbs"   value={totals.carbs}   goal={carbGoal} color="bg-brown-400" />
-              <MacroBar label="Fat"     value={totals.fat}     goal={fatGoal}  color="bg-sage-600" />
+              <MacroBar label="Carbs"   value={totals.carbs}   goal={carbGoal} color="bg-violet-500" />
+              <MacroBar label="Fat"     value={totals.fat}     goal={fatGoal}  color="bg-amber-500" />
             </div>
           </div>
 
