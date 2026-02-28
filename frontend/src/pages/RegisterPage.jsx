@@ -64,9 +64,9 @@ export default function RegisterPage({ onRegister }) {
         weightKg: form.weightKg ? parseFloat(form.weightKg) : null,
         heightCm: form.heightCm ? parseFloat(form.heightCm) : null,
       };
-      await api.post('/api/auth/register', body);
+      await api.post('/auth/register', body);
       toast.success('Account created! Signing in…');
-      const loginRes = await api.post('/api/auth/login', { username: form.username, password: form.password });
+      const loginRes = await api.post('/auth/login', { username: form.username, password: form.password });
       if (bmi) localStorage.setItem('userBMI', bmi);
       onRegister(loginRes.data);
       navigate('/dashboard');

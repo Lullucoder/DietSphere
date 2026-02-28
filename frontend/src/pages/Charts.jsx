@@ -49,7 +49,7 @@ export default function Charts({ user, onLogout }) {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`/api/charts?userId=${user.id}&days=${days}`);
+        const res = await api.get(`/charts?userId=${user.id}&days=${days}`);
         setData(res.data);
       } catch { /* silent */ }
       setLoading(false);

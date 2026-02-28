@@ -18,8 +18,8 @@ export default function Dashboard({ user, onLogout }) {
     const load = async () => {
       try {
         const [mRes, gRes] = await Promise.all([
-          api.get(`/api/dietary-entries/today?userId=${user.id}`),
-          api.get(`/api/goals?userId=${user.id}`),
+          api.get(`/dietary-entries/today?userId=${user.id}`),
+          api.get(`/goals?userId=${user.id}`),
         ]);
         setMeals(mapDietaryEntries(mRes.data));
         setGoals(gRes.data);

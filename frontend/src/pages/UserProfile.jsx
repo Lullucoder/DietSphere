@@ -33,7 +33,7 @@ export default function UserProfile({ user, onLogout, onUpdateUser }) {
   const bmiColor = !bmi ? '' : parseFloat(bmi) < 18.5 ? 'text-amber-500' : parseFloat(bmi) < 25 ? 'text-sage-600 dark:text-sage-400' : parseFloat(bmi) < 30 ? 'text-orange-500' : 'text-red-500';
 
   useEffect(() => {
-    api.get(`/api/dietary-entries/user/${user.id}`)
+    api.get(`/dietary-entries/user/${user.id}`)
       .then((res) => {
         const entries = mapDietaryEntries(res.data);
         const dates = new Set(entries.map((e) => new Date(e.entryDate).toDateString()));
@@ -49,7 +49,7 @@ export default function UserProfile({ user, onLogout, onUpdateUser }) {
   }, [user.id]);
 
   useEffect(() => {
-    api.get(`/api/auth/profile?userId=${user.id}`)
+    api.get(`/auth/profile?userId=${user.id}`)
       .then((res) => {
         if (!res.data) return;
         setForm((prev) => ({
@@ -68,7 +68,7 @@ export default function UserProfile({ user, onLogout, onUpdateUser }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await api.put(`/api/auth/profile?userId=${user.id}`, {
+      const res = await api.put(`/auth/profile?userId=${user.id}`, {
         username: form.username,
         email: form.email,
         age: form.age ? parseInt(form.age) : null,
@@ -91,7 +91,7 @@ export default function UserProfile({ user, onLogout, onUpdateUser }) {
     if (pwForm.newPassword.length < 6) { toast.error('Min 6 characters'); return; }
     setChangingPw(true);
     try {
-      await api.put(`/api/auth/change-password?userId=${user.id}`, {
+      await api.put(`/auth/change-password?userId=${user.id}`, {
         currentPassword: pwForm.currentPassword,
         newPassword: pwForm.newPassword,
       });
@@ -107,7 +107,7 @@ export default function UserProfile({ user, onLogout, onUpdateUser }) {
   const handleDelete = async () => {
     try {
       if (!deletePassword) { toast.error('Password is required'); return; }
-      await api.delete(`/api/auth/account?userId=${user.id}`, { data: { password: deletePassword } });
+      await api.delete(`/auth/account?userId=${user.id}`, { data: { password: deletePassword } });
       toast.success('Account deleted');
       onLogout();
     } catch {

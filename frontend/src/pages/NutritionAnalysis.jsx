@@ -15,7 +15,7 @@ export default function NutritionAnalysis({ user, onLogout }) {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`/api/analysis/${period}?userId=${user.id}`);
+        const res = await api.get(`/analysis/${period}?userId=${user.id}`);
         setData(res.data);
       } catch { /* silent */ }
       setLoading(false);

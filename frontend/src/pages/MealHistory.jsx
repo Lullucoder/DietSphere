@@ -16,7 +16,7 @@ export default function MealHistory({ user, onLogout }) {
 
   const load = async () => {
     try {
-      const res = await api.get(`/api/dietary-entries/user/${user.id}`);
+      const res = await api.get(`/dietary-entries/user/${user.id}`);
       setEntries(mapDietaryEntries(res.data));
     } catch { /* silent */ }
     setLoading(false);
@@ -27,7 +27,7 @@ export default function MealHistory({ user, onLogout }) {
   const handleDelete = async (id) => {
     setDeleting(id);
     try {
-      await api.delete(`/api/dietary-entries/${id}?userId=${user.id}`);
+      await api.delete(`/dietary-entries/${id}?userId=${user.id}`);
       setEntries((prev) => prev.filter((e) => e.id !== id));
       toast.success('Entry deleted');
     } catch {

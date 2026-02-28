@@ -34,7 +34,7 @@ export default function FoodLogging({ user, onLogout }) {
   const [logging, setLogging] = useState(false);
 
   useEffect(() => {
-    api.get('/api/foods').then((r) => {
+    api.get('/foods').then((r) => {
       const normalized = (r.data || []).map(normalizeFoodItem);
       setFoods(normalized);
       setFiltered(normalized);
@@ -87,7 +87,7 @@ export default function FoodLogging({ user, onLogout }) {
     try {
       await Promise.all(
         selectedFoods.map((food) =>
-          api.post(`/api/dietary-entries?userId=${user.id}`, {
+          api.post(`/dietary-entries?userId=${user.id}`, {
             foodItemId: food.id,
             portionSize: portionSize * (selected[food.id] || 1),
             mealType,

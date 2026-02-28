@@ -16,7 +16,7 @@ export default function LoginPage({ onLogin }) {
     setError('');
     setLoading(true);
     try {
-      const res = await api.post('/api/auth/login', form);
+      const res = await api.post('/auth/login', form);
       onLogin(res.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials');

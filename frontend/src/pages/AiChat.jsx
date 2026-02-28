@@ -49,14 +49,14 @@ export default function AiChat({ user, onLogout }) {
 
   /* Check Ollama status */
   useEffect(() => {
-    api.get('/api/ai/status')
+    api.get('/ai/status')
       .then((res) => setOllamaOnline(res.data?.ollamaAvailable ?? false))
       .catch(() => setOllamaOnline(false));
   }, []);
 
   /* Load chat history */
   useEffect(() => {
-    api.get(`/api/ai/history?userId=${user.id}`)
+    api.get(`/ai/history?userId=${user.id}`)
       .then((res) => {
         if (Array.isArray(res.data) && res.data.length) {
           setMessages(res.data.map((m) => ({ id: m.id, role: m.role, content: m.content })));
@@ -82,7 +82,7 @@ export default function AiChat({ user, onLogout }) {
     try {
       const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
 
-      const res = await api.post('/api/ai/chat', {
+      const res = await api.post('/ai/chat', {
         message: msg,
         userId: user.id,
         history,
@@ -105,13 +105,13 @@ export default function AiChat({ user, onLogout }) {
 
   const deleteMessage = async (id, idx) => {
     if (id) {
-      try { await api.delete(`/api/ai/history/${id}?userId=${user.id}`); } catch { /* skip */ }
+      try { await api.delete(`/ai/history/${id}?userId=${user.id}`); } catch { /* skip */ }
     }
     setMessages((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const clearChat = async () => {
-    try { await api.delete(`/api/ai/history?userId=${user.id}`); } catch { /* skip */ }
+    try { await api.delete(`/ai/history?userId=${user.id}`); } catch { /* skip */ }
     setMessages([]);
     toast.success('Chat cleared');
   };

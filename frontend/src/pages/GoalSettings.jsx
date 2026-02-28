@@ -99,7 +99,7 @@ export default function GoalSettings({ user, onLogout }) {
   }, [bmi]);
 
   useEffect(() => {
-    api.get(`/api/goals?userId=${user.id}`)
+    api.get(`/goals?userId=${user.id}`)
       .then((res) => {
         if (res.data) {
           setGoals(res.data);
@@ -122,7 +122,7 @@ export default function GoalSettings({ user, onLogout }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await api.put(`/api/goals?userId=${user.id}`, goals);
+      const res = await api.put(`/goals?userId=${user.id}`, goals);
       setOriginal(res.data || goals);
       toast.success('Goals saved!');
     } catch {
