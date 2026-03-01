@@ -1,4 +1,4 @@
-# 🥗 Diet Balance Nutrient Tracker
+# 🥗 DietSphere - Balanced Nutrient Tracker
 
 > A full-stack web application for tracking dietary habits, detecting nutrient deficiencies, and receiving AI-powered nutrition advice — featuring **111 Indian foods**, interactive charts, dark mode, and a local AI chatbot.
 
