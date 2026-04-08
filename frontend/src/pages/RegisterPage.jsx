@@ -178,19 +178,19 @@ export default function RegisterPage({ onRegister }) {
             {/* Row 3: Age + Weight */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Age <span className="text-brown-300 dark:text-dark-muted font-normal">(optional)</span></label>
-                <input type="number" value={form.age} onChange={set('age')} className="input" placeholder="e.g. 25" min="1" max="120" />
+                <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Age</label>
+                <input type="number" value={form.age} onChange={set('age')} className="input" placeholder="e.g. 25" min="1" max="120" required />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Weight (kg) <span className="text-brown-300 dark:text-dark-muted font-normal">(optional)</span></label>
-                <input type="number" value={form.weightKg} onChange={set('weightKg')} className="input" placeholder="e.g. 70" min="20" max="300" step="0.1" />
+                <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Weight (kg)</label>
+                <input type="number" value={form.weightKg} onChange={set('weightKg')} className="input" placeholder="e.g. 70" min="20" max="300" step="0.1" required />
               </div>
             </div>
 
             {/* Row 4: Height */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-semibold text-brown-500 dark:text-dark-muted">Height <span className="text-brown-300 dark:text-dark-muted font-normal">(optional)</span></label>
+                <label className="text-xs font-semibold text-brown-500 dark:text-dark-muted">Height</label>
                 <div className="flex rounded-lg overflow-hidden border border-cream-300 dark:border-dark-border text-xs">
                   <button type="button" onClick={() => setHeightMode('cm')}
                     className={`px-3 py-1 font-medium transition-colors ${heightMode === 'cm' ? 'bg-sage-500 text-white' : 'text-brown-400 dark:text-dark-muted hover:text-brown-600'}`}>
@@ -203,11 +203,11 @@ export default function RegisterPage({ onRegister }) {
                 </div>
               </div>
               {heightMode === 'cm' ? (
-                <input type="number" value={form.heightCm} onChange={set('heightCm')} className="input" placeholder="e.g. 175" min="50" max="300" />
+                <input type="number" value={form.heightCm} onChange={set('heightCm')} className="input" placeholder="e.g. 175" min="50" max="300" required />
               ) : (
                 <div className="grid grid-cols-2 gap-3">
-                  <input type="number" value={feet} onChange={(e) => handleFeetChange(e.target.value)} className="input" placeholder="Feet" min="1" max="8" />
-                  <input type="number" value={inches} onChange={(e) => handleInchesChange(e.target.value)} className="input" placeholder="Inches" min="0" max="11" />
+                  <input type="number" value={feet} onChange={(e) => handleFeetChange(e.target.value)} className="input" placeholder="Feet" min="1" max="8" required />
+                  <input type="number" value={inches} onChange={(e) => handleInchesChange(e.target.value)} className="input" placeholder="Inches" min="0" max="11" required />
                 </div>
               )}
             </div>
