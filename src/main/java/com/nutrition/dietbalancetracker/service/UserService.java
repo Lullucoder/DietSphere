@@ -1,5 +1,9 @@
 package com.nutrition.dietbalancetracker.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.nutrition.dietbalancetracker.dto.LoginRequestDTO;
 import com.nutrition.dietbalancetracker.dto.LoginResponseDTO;
 import com.nutrition.dietbalancetracker.dto.UserRegistrationDTO;
@@ -7,10 +11,8 @@ import com.nutrition.dietbalancetracker.model.User;
 import com.nutrition.dietbalancetracker.model.UserRole;
 import com.nutrition.dietbalancetracker.repository.UserRepository;
 import com.nutrition.dietbalancetracker.security.JwtTokenProvider;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * USER SERVICE
