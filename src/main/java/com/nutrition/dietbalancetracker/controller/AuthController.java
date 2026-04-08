@@ -57,23 +57,25 @@ public class AuthController {
     
     // POST /api/auth/register
     @PostMapping("/register")
-    public ResponseEntity<LoginResponseDTO> register(@Valid @RequestBody UserRegistrationDTO dto) {
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationDTO dto) {
         try {
             LoginResponseDTO response = userService.registerUser(dto);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            String message = e.getMessage() != null ? e.getMessage() : "Registration failed";
+            return ResponseEntity.badRequest().body(Map.of("message", message));
         }
     }
     
     // POST /api/auth/login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO dto) {
         try {
             LoginResponseDTO response = userService.loginUser(dto);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            String message = e.getMessage() != null ? e.getMessage() : "Login failed";
+            return ResponseEntity.badRequest().body(Map.of("message", message));
         }
     }
 

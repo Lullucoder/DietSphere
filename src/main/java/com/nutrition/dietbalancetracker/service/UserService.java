@@ -28,20 +28,23 @@ public class UserService {
     // Register a new user
     @Transactional
     public LoginResponseDTO registerUser(UserRegistrationDTO dto) {
+        String username = dto.getUsername().trim();
+        String email = dto.getEmail().trim().toLowerCase();
+
         // Check if username already exists
-        if (userRepository.existsByUsername(dto.getUsername())) {
+        if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists");
         }
         
         // Check if email already exists
-        if (userRepository.existsByEmail(dto.getEmail())) {
+        if (userRepository.existsByEmail(email)) {
             throw new RuntimeException("Email already exists");
         }
         
         // Create new user
         User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
+        user.setUsername(username);
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setAge(dto.getAge());
         user.setWeightKg(dto.getWeightKg());
@@ -61,8 +64,11 @@ public class UserService {
     
     // Login user
     public LoginResponseDTO loginUser(LoginRequestDTO dto) {
-        // Find user by username
-        User user = userRepository.findByUsername(dto.getUsername())
+        String identifier = dto.getUsername().trim();
+
+        // Find user by username first, then try email for convenience
+        User user = userRepository.findByUsername(identifier)
+            .or(() -> userRepository.findByEmail(identifier.toLowerCase()))
                 .orElseThrow(() -> new RuntimeException("Invalid username or password"));
         
         // Check password

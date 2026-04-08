@@ -19,7 +19,8 @@ export default function LoginPage({ onLogin }) {
       const res = await api.post('/auth/login', form);
       onLogin(res.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      const backendValidationMessage = err.response?.data?.errors?.[0]?.defaultMessage;
+      setError(backendValidationMessage || err.response?.data?.message || 'Invalid credentials');
     }
     setLoading(false);
   };
@@ -86,7 +87,7 @@ export default function LoginPage({ onLogin }) {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Username</label>
+              <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Username or Email</label>
               <div className="relative">
                 <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-300 dark:text-dark-muted" />
                 <input
@@ -94,7 +95,7 @@ export default function LoginPage({ onLogin }) {
                   value={form.username}
                   onChange={(e) => setForm({ ...form, username: e.target.value })}
                   className="input pl-10"
-                  placeholder="Enter your username"
+                  placeholder="Enter your username or email"
                   required
                 />
               </div>

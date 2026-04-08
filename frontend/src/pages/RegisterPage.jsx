@@ -56,22 +56,36 @@ export default function RegisterPage({ onRegister }) {
     if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
     if (form.password.length < 6) { setError('Password must be at least 6 characters'); return; }
 
+    const age = Number.parseInt(form.age, 10);
+    const weightKg = Number.parseFloat(form.weightKg);
+    const heightCm = Number.parseFloat(form.heightCm);
+
+    if (!form.age || Number.isNaN(age)) { setError('Age is required'); return; }
+    if (!form.weightKg || Number.isNaN(weightKg)) { setError('Weight is required'); return; }
+    if (!form.heightCm || Number.isNaN(heightCm)) { setError('Height is required'); return; }
+    if (age < 1 || age > 120) { setError('Age must be between 1 and 120'); return; }
+    if (weightKg < 10 || weightKg > 300) { setError('Weight must be between 10 and 300 kg'); return; }
+    if (heightCm < 50 || heightCm > 280) { setError('Height must be between 50 and 280 cm'); return; }
+
     setLoading(true);
     try {
       const body = {
-        username: form.username, email: form.email, password: form.password,
-        age: form.age ? parseInt(form.age) : null,
-        weightKg: form.weightKg ? parseFloat(form.weightKg) : null,
-        heightCm: form.heightCm ? parseFloat(form.heightCm) : null,
+        username: form.username.trim(),
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+        age,
+        weightKg,
+        heightCm,
       };
       await api.post('/auth/register', body);
       toast.success('Account created! Signing in…');
-      const loginRes = await api.post('/auth/login', { username: form.username, password: form.password });
+      const loginRes = await api.post('/auth/login', { username: body.username, password: form.password });
       if (bmi) localStorage.setItem('userBMI', bmi);
       onRegister(loginRes.data);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      const backendValidationMessage = err.response?.data?.errors?.[0]?.defaultMessage;
+      setError(backendValidationMessage || err.response?.data?.message || 'Registration failed');
     }
     setLoading(false);
   };
@@ -183,7 +197,7 @@ export default function RegisterPage({ onRegister }) {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-brown-500 dark:text-dark-muted mb-1.5">Weight (kg)</label>
-                <input type="number" value={form.weightKg} onChange={set('weightKg')} className="input" placeholder="e.g. 70" min="20" max="300" step="0.1" required />
+                <input type="number" value={form.weightKg} onChange={set('weightKg')} className="input" placeholder="e.g. 70" min="10" max="300" step="0.1" required />
               </div>
             </div>
 
@@ -203,7 +217,7 @@ export default function RegisterPage({ onRegister }) {
                 </div>
               </div>
               {heightMode === 'cm' ? (
-                <input type="number" value={form.heightCm} onChange={set('heightCm')} className="input" placeholder="e.g. 175" min="50" max="300" required />
+                <input type="number" value={form.heightCm} onChange={set('heightCm')} className="input" placeholder="e.g. 175" min="50" max="280" required />
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   <input type="number" value={feet} onChange={(e) => handleFeetChange(e.target.value)} className="input" placeholder="Feet" min="1" max="8" required />
