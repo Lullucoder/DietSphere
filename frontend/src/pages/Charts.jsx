@@ -19,7 +19,7 @@ const PERIODS = [
 const ChartCard = ({ title, children }) => (
   <div className="card p-5">
     <h3 className="text-sm font-semibold text-charcoal dark:text-dark-text mb-4">{title}</h3>
-    <div style={{ width: '100%', height: 256 }}>{children}</div>
+    <div style={{ width: '100%', minHeight: '300px' }}>{children}</div>
   </div>
 );
 
@@ -106,7 +106,7 @@ export default function Charts({ user, onLogout }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* 1: Calorie Trend */}
           <ChartCard title="Calorie Trend">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={dailyData}>
                 <defs>
                   <linearGradient id="calGrad" x1="0" y1="0" x2="0" y2="1">
@@ -125,7 +125,7 @@ export default function Charts({ user, onLogout }) {
 
           {/* 2: Macro Stacked Bar */}
           <ChartCard title="Macro Distribution (Daily)">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dailyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1e293b' : '#e2e8f0'} />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
@@ -141,7 +141,7 @@ export default function Charts({ user, onLogout }) {
 
           {/* 3: Macro Pie */}
           <ChartCard title="Macro Split (Total)">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={macroPieData}
@@ -163,7 +163,7 @@ export default function Charts({ user, onLogout }) {
 
           {/* 4: Meal Type Pie */}
           <ChartCard title="Meal Type Breakdown">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={mealTypePieData}
@@ -186,7 +186,7 @@ export default function Charts({ user, onLogout }) {
           {/* 5: Nutrient Radar */}
           {radarData.length > 0 && (
             <ChartCard title="Nutrient Balance">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={300}>
                 <RadarChart data={radarData}>
                   <PolarGrid stroke={dark ? '#1e293b' : '#e2e8f0'} />
                   <PolarAngleAxis dataKey="nutrient" tick={{ fontSize: 10, fill: dark ? '#94a3b8' : '#94a3b8' }} />
@@ -200,7 +200,7 @@ export default function Charts({ user, onLogout }) {
           {/* 6: Top Foods */}
           {topFoodsData.length > 0 && (
             <ChartCard title="Most Logged Foods">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={topFoodsData.slice(0, 8)} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1e293b' : '#e2e8f0'} />
                   <XAxis type="number" tick={{ fontSize: 11 }} stroke={dark ? '#94a3b8' : '#94a3b8'} />
