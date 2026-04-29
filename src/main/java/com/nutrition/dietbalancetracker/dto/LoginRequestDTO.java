@@ -1,6 +1,7 @@
 package com.nutrition.dietbalancetracker.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
