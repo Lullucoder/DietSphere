@@ -1,8 +1,6 @@
 package com.nutrition.dietbalancetracker.security;
 
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +35,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
-    @Value("${FRONTEND_URL:http://localhost:5173,http://localhost:3000}")
+    @Value("${FRONTEND_URL:http://localhost:5173,http://localhost:5174,http://localhost:3000}")
     private String frontendUrls;
     
     @Bean
@@ -78,11 +76,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Parse comma-separated frontend URLs
-        List<String> allowedOrigins = Arrays.asList(frontendUrls.split(","));
-        
-        // Trim whitespace from each URL
-        allowedOrigins = allowedOrigins.stream()
+        // Parse comma-separated frontend URLs and trim whitespace
+        var allowedOrigins = Arrays.asList(frontendUrls.split(",")).stream()
             .map(String::trim)
             .toList();
         
