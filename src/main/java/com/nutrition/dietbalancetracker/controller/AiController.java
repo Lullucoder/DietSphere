@@ -108,15 +108,23 @@ public class AiController {
     public ResponseEntity<Map<String, Object>> status() {
         boolean available = aiService.isAiAvailable();
         String provider = aiService.getActiveProviderName();
+        boolean ollamaAvailable = aiService.isOllamaAvailable();
+        boolean geminiAvailable = aiService.isGeminiAvailable();
         if (available) {
             return ResponseEntity.ok(Map.of(
                     "status", "online",
+                    "aiAvailable", true,
+                    "ollamaAvailable", ollamaAvailable,
+                    "geminiAvailable", geminiAvailable,
                     "provider", provider,
                     "message", provider + " is ready"
             ));
         } else {
             return ResponseEntity.ok(Map.of(
                     "status", "offline",
+                    "aiAvailable", false,
+                    "ollamaAvailable", ollamaAvailable,
+                    "geminiAvailable", geminiAvailable,
                     "provider", provider,
                     "message", "No AI provider is currently available"
             ));
