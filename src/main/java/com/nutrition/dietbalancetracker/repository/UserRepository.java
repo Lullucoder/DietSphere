@@ -1,11 +1,14 @@
 package com.nutrition.dietbalancetracker.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.nutrition.dietbalancetracker.model.User;
+import com.nutrition.dietbalancetracker.model.UserRole;
 
 /**
  * USER REPOSITORY
@@ -33,4 +36,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     // Check if email already exists
     boolean existsByEmail(String email);
+
+    // Count users by role (for admin stats)
+    long countByRole(UserRole role);
+
+    // Find users created after a certain date (for admin stats)
+    List<User> findByCreatedAtAfter(LocalDateTime date);
 }
+

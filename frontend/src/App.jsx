@@ -12,6 +12,7 @@ import UserProfile from './pages/UserProfile';
 import AiChat from './pages/AiChat';
 import Charts from './pages/Charts';
 import GoalSettings from './pages/GoalSettings';
+import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
 function ThemedToaster() {
@@ -79,6 +80,7 @@ function App() {
           <Route path="/ai-chat"    element={user ? <AiChat user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
           <Route path="/charts"     element={user ? <Charts user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
           <Route path="/goals"      element={user ? <GoalSettings user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route path="/admin"      element={user?.role === 'ADMIN' ? <AdminDashboard user={user} onLogout={handleLogout} /> : <Navigate to={user ? "/dashboard" : "/login"} />} />
           <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
       </Router>

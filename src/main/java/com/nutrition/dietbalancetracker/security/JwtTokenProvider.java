@@ -26,8 +26,8 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
     
-    // Generate a JWT token for a user
-    public String generateToken(String username) {
+    // Generate a JWT token for a user (includes role claim)
+    public String generateToken(String username, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
         
@@ -35,6 +35,7 @@ public class JwtTokenProvider {
         
         return Jwts.builder()
             .subject(username)
+            .claim("role", role)
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(key)
@@ -43,15 +44,13 @@ public class JwtTokenProvider {
     
     // Get username from token
     public String getUsernameFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        
-        Claims claims = Jwts.parser()
-            .verifyWith(key)
-                .build()
-            .parseSignedClaims(token)
-            .getPayload();
-        
-        return claims.getSubject();
+        return getClaims(token).getSubject();
+    }
+
+    // Get role from token
+    public String getRoleFromToken(String token) {
+        String role = getClaims(token).get("role", String.class);
+        return role != null ? role : "USER";
     }
     
     // Validate token
@@ -63,5 +62,14 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims getClaims(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Jwts.parser()
+            .verifyWith(key)
+                .build()
+            .parseSignedClaims(token)
+            .getPayload();
     }
 }

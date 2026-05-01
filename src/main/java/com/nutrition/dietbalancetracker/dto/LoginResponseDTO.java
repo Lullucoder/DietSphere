@@ -17,4 +17,5 @@ public class LoginResponseDTO {
     private Long userId;
     private Double bmi;
     private String bmiCategory;
+    private String role;
 }
