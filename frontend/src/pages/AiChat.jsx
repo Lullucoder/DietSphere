@@ -5,12 +5,12 @@ import api from '../services/api';
 import { FiSend, FiTrash2, FiWifiOff } from 'react-icons/fi';
 
 const SUGGESTED_PROMPTS = [
-  'Healthy Indian breakfast ideas',
-  'High protein vegetarian meals',
-  'How to reduce belly fat with diet?',
-  'Low calorie dinner recipes',
-  'Explain macronutrients simply',
-  'Best iron-rich Indian foods',
+  '🍛 Healthy Indian breakfast ideas',
+  '💪 High protein vegetarian meals',
+  '🔥 How to reduce belly fat with diet?',
+  '🥗 Low calorie dinner recipes',
+  '📊 Explain macronutrients simply',
+  '🫘 Best iron-rich Indian foods',
 ];
 
 function renderMarkdown(text) {

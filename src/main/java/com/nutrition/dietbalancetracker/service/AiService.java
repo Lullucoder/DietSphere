@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.nutrition.dietbalancetracker.model.DietaryEntry;
@@ -86,12 +87,15 @@ public class AiService {
                 case GEMINI -> chatWithGemini(messages);
                 case NONE -> buildUnavailableMessage();
             };
+        } catch (RestClientResponseException e) {
+            log.warn("AI provider returned error status {}: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return buildProviderErrorMessage(e);
         } catch (org.springframework.web.client.RestClientException e) {
             log.warn("AI provider not available: {}", e.getMessage());
-            return buildUnavailableMessage();
+            return buildProviderErrorMessage(e);
         } catch (Exception e) {
             log.error("Unexpected error calling AI provider", e);
-            return buildUnavailableMessage();
+            return buildProviderErrorMessage(e);
         }
     }
 
@@ -259,7 +263,42 @@ public class AiService {
     }
 
     private String buildUnavailableMessage() {
-        return "No AI provider is currently available. Run Ollama locally for offline chat, or configure GEMINI_API_KEY for online chat.";
+        String configuredProvider = normalizedProviderSetting();
+
+        if ("gemini".equals(configuredProvider)) {
+            if (!isGeminiAvailable()) {
+                return "Gemini is selected for the chatbot, but GEMINI_API_KEY is missing on the backend deployment.";
+            }
+            return "Gemini is selected for the chatbot, but the backend could not use it. Check GEMINI_API_KEY, GEMINI_MODEL, and deployment logs.";
+        }
+
+        if ("ollama".equals(configuredProvider)) {
+            return "Ollama is selected for the chatbot, but the Ollama server is not reachable from this backend.";
+        }
+
+        if (!isGeminiAvailable() && !isOllamaAvailable()) {
+            return "No AI provider is configured on the backend. Set AI_PROVIDER=gemini and add GEMINI_API_KEY in your deployment settings.";
+        }
+
+        return "No AI provider is currently available. Check the backend AI configuration and deployment logs.";
+    }
+
+    private String buildProviderErrorMessage(Exception error) {
+        String configuredProvider = normalizedProviderSetting();
+
+        if ("gemini".equals(configuredProvider) || ("auto".equals(configuredProvider) && isGeminiAvailable())) {
+            return "Gemini chat is configured, but the backend request failed. Check GEMINI_API_KEY, GEMINI_MODEL, and your Railway deployment logs.";
+        }
+
+        if ("ollama".equals(configuredProvider)) {
+            return "Ollama chat is configured, but the Ollama server is not reachable from this backend.";
+        }
+
+        return buildUnavailableMessage();
+    }
+
+    private String normalizedProviderSetting() {
+        return aiProvider == null ? "auto" : aiProvider.trim().toLowerCase();
     }
 
     private enum AiProvider {
