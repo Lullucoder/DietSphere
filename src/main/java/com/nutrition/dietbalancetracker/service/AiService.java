@@ -11,9 +11,12 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
@@ -58,7 +61,10 @@ public class AiService {
     @Value("${gemini.api-key:}")
     private String geminiApiKey;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private static final int CONNECT_TIMEOUT_MS = 5000;
+    private static final int READ_TIMEOUT_MS = 15000;
+
+    private final RestTemplate restTemplate = createRestTemplate();
 
     /**
      * Send a chat message to the configured AI provider with the user's
@@ -89,13 +95,13 @@ public class AiService {
             };
         } catch (RestClientResponseException e) {
             log.warn("AI provider returned error status {}: {}", e.getStatusCode(), e.getResponseBodyAsString());
-            return buildProviderErrorMessage(e);
+            return buildProviderErrorMessage();
         } catch (org.springframework.web.client.RestClientException e) {
             log.warn("AI provider not available: {}", e.getMessage());
-            return buildProviderErrorMessage(e);
+            return buildProviderErrorMessage();
         } catch (Exception e) {
             log.error("Unexpected error calling AI provider", e);
-            return buildProviderErrorMessage(e);
+            return buildProviderErrorMessage();
         }
     }
 
@@ -122,7 +128,26 @@ public class AiService {
     }
 
     public boolean isGeminiAvailable() {
-        return geminiApiKey != null && !geminiApiKey.isBlank();
+        if (geminiApiKey == null || geminiApiKey.isBlank()) {
+            return false;
+        }
+
+        try {
+            HttpHeaders headers = jsonHeaders();
+            headers.set("X-goog-api-key", geminiApiKey);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            String endpoint = geminiBaseUrl + "/models/" + geminiModel;
+            HttpMethod method = Objects.requireNonNull(HttpMethod.GET);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    endpoint,
+                    method,
+                    entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (org.springframework.web.client.RestClientException e) {
+            return false;
+        }
     }
 
     /* ---- private helpers ---- */
@@ -134,12 +159,18 @@ public class AiService {
         requestBody.put("stream", false);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, jsonHeaders());
-        ResponseEntity<Map> response = restTemplate.postForEntity(
-                ollamaBaseUrl + "/api/chat", entity, Map.class);
+        HttpMethod method = Objects.requireNonNull(HttpMethod.POST);
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+            ollamaBaseUrl + "/api/chat",
+            method,
+            entity,
+            new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+        Map<String, Object> body = response.getBody();
+        if (response.getStatusCode().is2xxSuccessful() && body != null) {
             @SuppressWarnings("unchecked")
-            Map<String, Object> message = (Map<String, Object>) response.getBody().get("message");
+            Map<String, Object> message = (Map<String, Object>) body.get("message");
             if (message != null) {
                 Object content = message.get("content");
                 if (content instanceof String text && !text.isBlank()) {
@@ -154,6 +185,12 @@ public class AiService {
     private String chatWithGemini(List<Map<String, String>> messages) {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("contents", buildGeminiContents(messages));
+        String systemInstruction = extractSystemInstruction(messages);
+        if (systemInstruction != null && !systemInstruction.isBlank()) {
+            requestBody.put("systemInstruction", Map.of(
+                    "parts", List.of(Map.of("text", systemInstruction))
+            ));
+        }
 
         Map<String, Object> generationConfig = new HashMap<>();
         generationConfig.put("temperature", 0.7);
@@ -164,10 +201,17 @@ public class AiService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
         String endpoint = geminiBaseUrl + "/models/" + geminiModel + ":generateContent";
-        ResponseEntity<Map> response = restTemplate.postForEntity(endpoint, entity, Map.class);
+        HttpMethod method = Objects.requireNonNull(HttpMethod.POST);
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+            endpoint,
+            method,
+            entity,
+            new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            Object text = extractGeminiText(response.getBody());
+        Map<String, Object> body = response.getBody();
+        if (response.getStatusCode().is2xxSuccessful() && body != null) {
+            Object text = extractGeminiText(body);
             if (text instanceof String reply && !reply.isBlank()) {
                 return reply;
             }
@@ -180,6 +224,9 @@ public class AiService {
         List<Map<String, Object>> contents = new ArrayList<>();
         for (Map<String, String> message : messages) {
             String role = Objects.equals(message.get("role"), "assistant") ? "model" : "user";
+            if (Objects.equals(message.get("role"), "system")) {
+                continue;
+            }
             String content = message.get("content");
             if (content == null || content.isBlank()) {
                 continue;
@@ -193,7 +240,7 @@ public class AiService {
         return contents;
     }
 
-    private Object extractGeminiText(Map responseBody) {
+    private Object extractGeminiText(Map<String, Object> responseBody) {
         Object candidatesObj = responseBody.get("candidates");
         if (!(candidatesObj instanceof List<?> candidates) || candidates.isEmpty()) {
             return null;
@@ -233,6 +280,31 @@ public class AiService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
+    }
+
+    private String extractSystemInstruction(List<Map<String, String>> messages) {
+        StringBuilder sb = new StringBuilder();
+        for (Map<String, String> message : messages) {
+            if (!Objects.equals(message.get("role"), "system")) {
+                continue;
+            }
+            String content = message.get("content");
+            if (content == null || content.isBlank()) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            sb.append(content);
+        }
+        return sb.length() > 0 ? sb.toString() : null;
+    }
+
+    private RestTemplate createRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        factory.setReadTimeout(READ_TIMEOUT_MS);
+        return new RestTemplate(factory);
     }
 
     private AiProvider resolveProvider() {
@@ -283,7 +355,7 @@ public class AiService {
         return "No AI provider is currently available. Check the backend AI configuration and deployment logs.";
     }
 
-    private String buildProviderErrorMessage(Exception error) {
+    private String buildProviderErrorMessage() {
         String configuredProvider = normalizedProviderSetting();
 
         if ("gemini".equals(configuredProvider) || ("auto".equals(configuredProvider) && isGeminiAvailable())) {
@@ -309,6 +381,9 @@ public class AiService {
 
     private String buildProfileContext(Long userId) {
         try {
+            if (userId == null) {
+                return "User profile not available.";
+            }
             User user = userRepository.findById(userId).orElse(null);
             if (user == null) return "User profile not available.";
 
@@ -333,6 +408,9 @@ public class AiService {
 
     private String buildDietContext(Long userId) {
         try {
+            if (userId == null) {
+                return "Unable to fetch today's meal data.";
+            }
             LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
             LocalDateTime endOfDay = startOfDay.plusDays(1);
             List<DietaryEntry> todayEntries =

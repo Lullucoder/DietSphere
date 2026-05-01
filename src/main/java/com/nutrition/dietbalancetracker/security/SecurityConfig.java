@@ -35,7 +35,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
-    @Value("${FRONTEND_URL:https://diet-sphere.vercel.app,http://localhost:5173,http://localhost:5174,http://localhost:3000}")
+    @Value("${FRONTEND_URL:http://localhost:5173,http://localhost:5174,http://localhost:3000,https://*.vercel.app}")
     private String frontendUrls;
     
     @Bean
