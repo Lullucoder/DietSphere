@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -26,9 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * AI SERVICE
  * ==========
- * Communicates with a local Ollama instance to provide AI-powered
- * nutrition coaching. Enriches prompts with the user's actual diet data
- * so the AI can give personalised, context-aware advice.
+ * Communicates with Ollama or Gemini to provide AI-powered nutrition
+ * coaching. Enriches prompts with the user's actual diet data so the AI
+ * can give personalised, context-aware advice.
  */
 @Service
 @Slf4j
@@ -38,16 +39,29 @@ public class AiService {
     private final DietaryEntryRepository dietaryEntryRepository;
     private final UserRepository userRepository;
 
+    @Value("${ai.provider:auto}")
+    private String aiProvider;
+
     @Value("${ollama.base-url:http://localhost:11434}")
     private String ollamaBaseUrl;
 
     @Value("${ollama.model:llama3.2:3b}")
     private String ollamaModel;
 
+    @Value("${gemini.base-url:https://generativelanguage.googleapis.com/v1beta}")
+    private String geminiBaseUrl;
+
+    @Value("${gemini.model:gemini-3.1-flash-lite-preview}")
+    private String geminiModel;
+
+    @Value("${gemini.api-key:}")
+    private String geminiApiKey;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * Send a chat message to Ollama with the user's nutritional context.
+     * Send a chat message to the configured AI provider with the user's
+     * nutritional context.
      *
      * @param userId              The logged-in user's ID
      * @param userMessage         The message typed by the user
@@ -56,16 +70,9 @@ public class AiService {
      */
     public String chat(Long userId, String userMessage, List<Map<String, String>> conversationHistory) {
         try {
-            // 1) Build nutritional context from today's meals
             String dietContext = buildDietContext(userId);
-
-            // 1b) Build user profile context (BMI, weight, height)
             String profileContext = buildProfileContext(userId);
-
-            // 2) System prompt
             String systemPrompt = buildSystemPrompt(dietContext, profileContext);
-
-            // 3) Assemble messages list for Ollama /api/chat
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "system", "content", systemPrompt));
 
@@ -73,41 +80,34 @@ public class AiService {
                 messages.addAll(conversationHistory);
             }
             messages.add(Map.of("role", "user", "content", userMessage));
-
-            // 4) Call Ollama
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", ollamaModel);
-            requestBody.put("messages", messages);
-            requestBody.put("stream", false);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    ollamaBaseUrl + "/api/chat", entity, Map.class);
-
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> message = (Map<String, Object>) response.getBody().get("message");
-                if (message != null) {
-                    return (String) message.get("content");
-                }
-            }
-
-            return "I'm sorry, I couldn't generate a response. Please try again.";
-
+            AiProvider provider = resolveProvider();
+            return switch (provider) {
+                case OLLAMA -> chatWithOllama(messages);
+                case GEMINI -> chatWithGemini(messages);
+                case NONE -> buildUnavailableMessage();
+            };
         } catch (org.springframework.web.client.RestClientException e) {
-            // Graceful fallback for cloud deployment without Ollama
-            log.warn("Ollama not available (cloud mode): {}", e.getMessage());
-            return "I'm currently running in cloud mode without a local AI model. For AI-powered advice, please run the app locally with Ollama installed. In the meantime, check your Nutrition Analysis page for deficiency recommendations!";
+            log.warn("AI provider not available: {}", e.getMessage());
+            return buildUnavailableMessage();
         } catch (Exception e) {
-            log.error("Unexpected error calling Ollama: {}", e.getMessage());
-            return "I'm currently running in cloud mode without a local AI model. For AI-powered advice, please run the app locally with Ollama installed. In the meantime, check your Nutrition Analysis page for deficiency recommendations!";
+            log.error("Unexpected error calling AI provider", e);
+            return buildUnavailableMessage();
         }
     }
 
-    /** Quick connectivity check. */
+    /** Quick connectivity check for the currently selected provider strategy. */
+    public boolean isAiAvailable() {
+        return resolveProvider() != AiProvider.NONE;
+    }
+
+    public String getActiveProviderName() {
+        return switch (resolveProvider()) {
+            case OLLAMA -> "ollama";
+            case GEMINI -> "gemini";
+            case NONE -> "none";
+        };
+    }
+
     public boolean isOllamaAvailable() {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(ollamaBaseUrl + "/api/tags", String.class);
@@ -117,7 +117,156 @@ public class AiService {
         }
     }
 
+    public boolean isGeminiAvailable() {
+        return geminiApiKey != null && !geminiApiKey.isBlank();
+    }
+
     /* ---- private helpers ---- */
+
+    private String chatWithOllama(List<Map<String, String>> messages) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", ollamaModel);
+        requestBody.put("messages", messages);
+        requestBody.put("stream", false);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, jsonHeaders());
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                ollamaBaseUrl + "/api/chat", entity, Map.class);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> message = (Map<String, Object>) response.getBody().get("message");
+            if (message != null) {
+                Object content = message.get("content");
+                if (content instanceof String text && !text.isBlank()) {
+                    return text;
+                }
+            }
+        }
+
+        return "I'm sorry, I couldn't generate a response. Please try again.";
+    }
+
+    private String chatWithGemini(List<Map<String, String>> messages) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("contents", buildGeminiContents(messages));
+
+        Map<String, Object> generationConfig = new HashMap<>();
+        generationConfig.put("temperature", 0.7);
+        requestBody.put("generationConfig", generationConfig);
+
+        HttpHeaders headers = jsonHeaders();
+        headers.set("X-goog-api-key", geminiApiKey);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String endpoint = geminiBaseUrl + "/models/" + geminiModel + ":generateContent";
+        ResponseEntity<Map> response = restTemplate.postForEntity(endpoint, entity, Map.class);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            Object text = extractGeminiText(response.getBody());
+            if (text instanceof String reply && !reply.isBlank()) {
+                return reply;
+            }
+        }
+
+        return "I'm sorry, I couldn't generate a response. Please try again.";
+    }
+
+    private List<Map<String, Object>> buildGeminiContents(List<Map<String, String>> messages) {
+        List<Map<String, Object>> contents = new ArrayList<>();
+        for (Map<String, String> message : messages) {
+            String role = Objects.equals(message.get("role"), "assistant") ? "model" : "user";
+            String content = message.get("content");
+            if (content == null || content.isBlank()) {
+                continue;
+            }
+
+            contents.add(Map.of(
+                    "role", role,
+                    "parts", List.of(Map.of("text", content))
+            ));
+        }
+        return contents;
+    }
+
+    private Object extractGeminiText(Map responseBody) {
+        Object candidatesObj = responseBody.get("candidates");
+        if (!(candidatesObj instanceof List<?> candidates) || candidates.isEmpty()) {
+            return null;
+        }
+
+        Object firstCandidate = candidates.get(0);
+        if (!(firstCandidate instanceof Map<?, ?> candidateMap)) {
+            return null;
+        }
+
+        Object contentObj = candidateMap.get("content");
+        if (!(contentObj instanceof Map<?, ?> contentMap)) {
+            return null;
+        }
+
+        Object partsObj = contentMap.get("parts");
+        if (!(partsObj instanceof List<?> parts) || parts.isEmpty()) {
+            return null;
+        }
+
+        StringBuilder reply = new StringBuilder();
+        for (Object part : parts) {
+            if (part instanceof Map<?, ?> partMap) {
+                Object text = partMap.get("text");
+                if (text instanceof String value && !value.isBlank()) {
+                    if (reply.length() > 0) {
+                        reply.append("\n");
+                    }
+                    reply.append(value);
+                }
+            }
+        }
+        return reply.toString();
+    }
+
+    private HttpHeaders jsonHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    private AiProvider resolveProvider() {
+        String provider = aiProvider == null ? "auto" : aiProvider.trim().toLowerCase();
+        return switch (provider) {
+            case "ollama" -> isOllamaAvailable() ? AiProvider.OLLAMA : AiProvider.NONE;
+            case "gemini" -> isGeminiAvailable() ? AiProvider.GEMINI : AiProvider.NONE;
+            case "auto" -> {
+                if (isOllamaAvailable()) {
+                    yield AiProvider.OLLAMA;
+                }
+                if (isGeminiAvailable()) {
+                    yield AiProvider.GEMINI;
+                }
+                yield AiProvider.NONE;
+            }
+            default -> {
+                log.warn("Unknown ai.provider value: {}. Falling back to auto.", aiProvider);
+                if (isOllamaAvailable()) {
+                    yield AiProvider.OLLAMA;
+                }
+                if (isGeminiAvailable()) {
+                    yield AiProvider.GEMINI;
+                }
+                yield AiProvider.NONE;
+            }
+        };
+    }
+
+    private String buildUnavailableMessage() {
+        return "No AI provider is currently available. Run Ollama locally for offline chat, or configure GEMINI_API_KEY for online chat.";
+    }
+
+    private enum AiProvider {
+        OLLAMA,
+        GEMINI,
+        NONE
+    }
 
     private String buildProfileContext(Long userId) {
         try {

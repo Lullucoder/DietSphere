@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * AI CONTROLLER
  * =============
- * Exposes REST endpoints for the AI chat feature powered by a local Ollama instance.
+ * Exposes REST endpoints for the AI chat feature powered by Ollama or Gemini.
  * Also manages persistent chat history stored in the database.
  */
 @RestController
@@ -52,6 +52,8 @@ public class AiController {
 
         // Get AI reply
         String reply = aiService.chat(request.getUserId(), request.getMessage(), request.getHistory());
+        boolean available = aiService.isAiAvailable();
+        String provider = aiService.getActiveProviderName();
 
         // Save assistant reply
         ChatMessage assistantMsg = new ChatMessage();
@@ -60,7 +62,7 @@ public class AiController {
         assistantMsg.setContent(reply);
         chatMessageRepository.save(assistantMsg);
 
-        return ResponseEntity.ok(new AiChatResponseDTO(reply, true));
+        return ResponseEntity.ok(new AiChatResponseDTO(reply, available, provider));
     }
 
     /**
@@ -100,20 +102,23 @@ public class AiController {
 
     /**
      * GET /api/ai/status
-     * Quick check whether the Ollama backend is reachable.
+     * Quick check whether an AI backend is reachable.
      */
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> status() {
-        boolean available = aiService.isOllamaAvailable();
+        boolean available = aiService.isAiAvailable();
+        String provider = aiService.getActiveProviderName();
         if (available) {
             return ResponseEntity.ok(Map.of(
                     "status", "online",
-                    "message", "Ollama is running and ready"
+                    "provider", provider,
+                    "message", provider + " is ready"
             ));
         } else {
             return ResponseEntity.ok(Map.of(
                     "status", "offline",
-                    "message", "Ollama not available in cloud deployment"
+                    "provider", provider,
+                    "message", "No AI provider is currently available"
             ));
         }
     }
