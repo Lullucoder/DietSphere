@@ -21,4 +21,8 @@ public interface DietaryEntryRepository extends JpaRepository<DietaryEntry, Long
 
     // Delete all dietary entries referencing any of the given food items
     void deleteByFoodItemIn(java.util.List<com.nutrition.dietbalancetracker.model.FoodItem> foodItems);
+
+    // Count entries for a specific user (for admin stats)
+    long countByUserId(Long userId);
 }
+

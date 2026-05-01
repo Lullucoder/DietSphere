@@ -2,10 +2,10 @@ package com.nutrition.dietbalancetracker.security;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -66,10 +66,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // If token exists and is valid, authenticate the user
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
+            String role = jwtTokenProvider.getRoleFromToken(token);
+
+            // Create authority from role (Spring Security expects "ROLE_" prefix)
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            username, null, Collections.emptyList());
+                            username, null, List.of(authority));
             authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -90,3 +94,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 }
+

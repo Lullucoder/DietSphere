@@ -56,12 +56,12 @@ public class UserService {
         // Save to database
         user = userRepository.save(user);
         
-        // Generate JWT token
-        String token = jwtTokenProvider.generateToken(user.getUsername());
+        // Generate JWT token (includes role)
+        String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
         
-        // Return response
+        // Return response with role
         return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId(),
-                user.getBmi(), user.getBmiCategory());
+                user.getBmi(), user.getBmiCategory(), user.getRole().name());
     }
     
     // Login user
@@ -78,11 +78,11 @@ public class UserService {
             throw new RuntimeException("Invalid username or password");
         }
         
-        // Generate JWT token
-        String token = jwtTokenProvider.generateToken(user.getUsername());
+        // Generate JWT token (includes role)
+        String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
         
-        // Return response
+        // Return response with role
         return new LoginResponseDTO(token, user.getUsername(), user.getEmail(), user.getId(),
-                user.getBmi(), user.getBmiCategory());
+                user.getBmi(), user.getBmiCategory(), user.getRole().name());
     }
 }

@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   FiHome, FiPlusCircle, FiClock, FiActivity, FiMessageSquare,
   FiBarChart2, FiTarget, FiUser, FiLogOut, FiMenu, FiX,
-  FiSun, FiMoon
+  FiSun, FiMoon, FiShield
 } from 'react-icons/fi';
 
 const NAV = [
@@ -48,6 +48,15 @@ export default function Layout({ user, onLogout, children }) {
             <span>{label}</span>
           </Link>
         ))}
+        {user?.role === 'ADMIN' && (
+          <>
+            <div className="my-2 border-t border-cream-200 dark:border-dark-border" />
+            <Link to="/admin" onClick={onNav} className={linkClass('/admin')}>
+              <FiShield className="w-[18px] h-[18px] flex-shrink-0" />
+              <span>Admin Panel</span>
+            </Link>
+          </>
+        )}
       </nav>
 
       <div className="px-3 pb-5 pt-3 border-t border-cream-200 dark:border-dark-border space-y-2">
