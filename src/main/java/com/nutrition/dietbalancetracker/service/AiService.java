@@ -55,7 +55,7 @@ public class AiService {
     @Value("${gemini.base-url:https://generativelanguage.googleapis.com/v1beta}")
     private String geminiBaseUrl;
 
-    @Value("${gemini.model:gemini-3.1-flash-lite-preview}")
+    @Value("${gemini.model:gemini-3-flash-preview}")
     private String geminiModel;
 
     @Value("${gemini.api-key:}")
