@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.nutrition.dietbalancetracker.model.DietaryEntry;
 import com.nutrition.dietbalancetracker.model.User;
@@ -183,41 +184,17 @@ public class AiService {
     }
 
     private String chatWithGemini(List<Map<String, String>> messages) {
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("contents", buildGeminiContents(messages));
-        String systemInstruction = extractSystemInstruction(messages);
-        if (systemInstruction != null && !systemInstruction.isBlank()) {
-            requestBody.put("systemInstruction", Map.of(
-                    "parts", List.of(Map.of("text", systemInstruction))
-            ));
-        }
-
-        Map<String, Object> generationConfig = new HashMap<>();
-        generationConfig.put("temperature", 0.7);
-        requestBody.put("generationConfig", generationConfig);
-
-        HttpHeaders headers = jsonHeaders();
-        headers.set("X-goog-api-key", geminiApiKey);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-
-        String endpoint = geminiBaseUrl + "/models/" + geminiModel + ":generateContent";
-        HttpMethod method = Objects.requireNonNull(HttpMethod.POST);
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-            endpoint,
-            method,
-            entity,
-            new ParameterizedTypeReference<Map<String, Object>>() {}
-        );
-
-        Map<String, Object> body = response.getBody();
-        if (response.getStatusCode().is2xxSuccessful() && body != null) {
-            Object text = extractGeminiText(body);
-            if (text instanceof String reply && !reply.isBlank()) {
-                return reply;
+        Map<String, Object> requestBody = buildGeminiRequest(messages, true);
+        try {
+            return executeGeminiRequest(requestBody);
+        } catch (RestClientResponseException e) {
+            if (e.getStatusCode().value() == 400) {
+                // Fallback: simple prompt without systemInstruction or roles
+                Map<String, Object> fallbackBody = buildGeminiFallbackRequest(messages);
+                return executeGeminiRequest(fallbackBody);
             }
+            throw e;
         }
-
-        return "I'm sorry, I couldn't generate a response. Please try again.";
     }
 
     private List<Map<String, Object>> buildGeminiContents(List<Map<String, String>> messages) {
@@ -282,6 +259,67 @@ public class AiService {
         return headers;
     }
 
+    private Map<String, Object> buildGeminiRequest(List<Map<String, String>> messages, boolean includeSystem) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("contents", buildGeminiContents(messages));
+        if (includeSystem) {
+            String systemInstruction = extractSystemInstruction(messages);
+            if (systemInstruction != null && !systemInstruction.isBlank()) {
+                requestBody.put("systemInstruction", Map.of(
+                        "parts", List.of(Map.of("text", systemInstruction))
+                ));
+            }
+        }
+
+        Map<String, Object> generationConfig = new HashMap<>();
+        generationConfig.put("temperature", 0.7);
+        requestBody.put("generationConfig", generationConfig);
+        return requestBody;
+    }
+
+    private Map<String, Object> buildGeminiFallbackRequest(List<Map<String, String>> messages) {
+        String prompt = buildFallbackPrompt(messages);
+        Map<String, Object> fallbackBody = new HashMap<>();
+        fallbackBody.put("contents", List.of(
+                Map.of("parts", List.of(Map.of("text", prompt)))
+        ));
+        return fallbackBody;
+    }
+
+    private String executeGeminiRequest(Map<String, Object> requestBody) {
+        HttpHeaders headers = jsonHeaders();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String endpoint = geminiBaseUrl + "/models/" + geminiModel + ":generateContent";
+        String url = addGeminiApiKey(endpoint);
+        HttpMethod method = Objects.requireNonNull(HttpMethod.POST);
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                url,
+                method,
+                entity,
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
+
+        Map<String, Object> body = response.getBody();
+        if (response.getStatusCode().is2xxSuccessful() && body != null) {
+            Object text = extractGeminiText(body);
+            if (text instanceof String reply && !reply.isBlank()) {
+                return reply;
+            }
+        }
+
+        return "I'm sorry, I couldn't generate a response. Please try again.";
+    }
+
+    private String addGeminiApiKey(String endpoint) {
+        if (geminiApiKey == null || geminiApiKey.isBlank()) {
+            return endpoint;
+        }
+        return UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("key", geminiApiKey)
+                .toUriString();
+    }
+
     private String extractSystemInstruction(List<Map<String, String>> messages) {
         StringBuilder sb = new StringBuilder();
         for (Map<String, String> message : messages) {
@@ -298,6 +336,29 @@ public class AiService {
             sb.append(content);
         }
         return sb.length() > 0 ? sb.toString() : null;
+    }
+
+    private String buildFallbackPrompt(List<Map<String, String>> messages) {
+        StringBuilder sb = new StringBuilder();
+        String systemInstruction = extractSystemInstruction(messages);
+        if (systemInstruction != null && !systemInstruction.isBlank()) {
+            sb.append(systemInstruction).append("\n\n");
+        }
+
+        for (Map<String, String> message : messages) {
+            String role = message.get("role");
+            String content = message.get("content");
+            if (content == null || content.isBlank()) {
+                continue;
+            }
+            if ("assistant".equals(role)) {
+                sb.append("Assistant: ").append(content).append("\n");
+            } else if ("user".equals(role)) {
+                sb.append("User: ").append(content).append("\n");
+            }
+        }
+
+        return sb.toString().trim();
     }
 
     private RestTemplate createRestTemplate() {
