@@ -137,10 +137,11 @@ public class AiService {
             HttpHeaders headers = jsonHeaders();
             headers.set("X-goog-api-key", geminiApiKey);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
-            String endpoint = geminiBaseUrl + "/models/" + geminiModel;
+            String endpoint = geminiBaseUrl + "/models/" + normalizeGeminiModel();
+            String url = addGeminiApiKey(endpoint);
             HttpMethod method = Objects.requireNonNull(HttpMethod.GET);
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    endpoint,
+                    url,
                     method,
                     entity,
                     new ParameterizedTypeReference<Map<String, Object>>() {}
@@ -290,7 +291,7 @@ public class AiService {
         HttpHeaders headers = jsonHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        String endpoint = geminiBaseUrl + "/models/" + geminiModel + ":generateContent";
+        String endpoint = geminiBaseUrl + "/models/" + normalizeGeminiModel() + ":generateContent";
         String url = addGeminiApiKey(endpoint);
         HttpMethod method = Objects.requireNonNull(HttpMethod.POST);
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
@@ -318,6 +319,17 @@ public class AiService {
         return UriComponentsBuilder.fromHttpUrl(endpoint)
                 .queryParam("key", geminiApiKey)
                 .toUriString();
+    }
+
+    private String normalizeGeminiModel() {
+        if (geminiModel == null) {
+            return "";
+        }
+        String model = geminiModel.trim();
+        if (model.startsWith("models/")) {
+            model = model.substring("models/".length());
+        }
+        return model;
     }
 
     private String extractSystemInstruction(List<Map<String, String>> messages) {
